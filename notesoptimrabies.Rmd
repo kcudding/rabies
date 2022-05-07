@@ -1,0 +1,176 @@
+---
+title: "optimize rabies campaign: take 1"
+author: "Kim Cuddington"
+date: "07/05/2022"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment="", warning=F)
+```
+
+# Optimizing rabies vaccine programs for dogs
+
+Our goal is to use standard optimization tools to find the most cost-effective rabies vaccination strategy. This doc is take 1: get an optimal vaccination plan for a given number of vaccines and dogs.
+
+We're using information from:
+
+[Wallace, R. M., Undurraga, E. A., Gibson, A., Boone, J., Pieracci, E. G., 
+Gamble, L., & Blanton, J. D. (2019). Estimating the effectiveness of 
+vaccine programs in dog populations. Epidemiology & Infection, 147.](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/E0D25E5DFB352731121EDBA5DEFEF7EE/S0950268819001158a.pdf/estimating-the-effectiveness-of-vaccine-programs-in-dog-populations.pdf)
+
+online version [https://rabiestaskforce.com/toolkit/vaxplan/](https://rabiestaskforce.com/toolkit/vaxplan/)
+
+# Dog population structure
+
+The dog population is thought of as consisting of always confined dogs (C), sometimes confined dogs (SC), and never confined (NC). The status is independent of ownership, and the population of free-roaming dogs is therefore SC+NC.
+
+If we know the total dog population and the percent in each category, we can also estimate numbers this way.
+
+To start, we're just using the default values from the online tool.
+
+```{r}
+# Dt=total dog population 
+# pC[i] = proportion of dogs in each category
+# Categories are C always confined, SC sometimes confined, NC never confined
+# and sum to one
+
+Dt=30000
+C=0.28
+NC=0.48
+SC=1-(C+NC)
+pC=c(C,SC,NC)
+d=Dt*pC
+```
+
+
+# Accessibility
+
+Wallace et al (2019) have a category called accessibility,
+which seems to relate to how easy it is to administer the vaccine, using the delivery method. These methods are central point (CP), door-to-door (DD), capture, vaccinate and release (CVR), and oral bait handout (ORV). The first three methods use an injectable vaccine.
+
+
+```{r}
+# vaccine efficacy estimates
+# pve = probability of vaccinating a dog in category C using method i
+# methods are CP - central point, DD-door to door, 
+# CVR-capture, vaccinate, release, ORV-oral bait
+# values from Wallance (assume ORV is more effective with never confined)
+
+CP=c(.95,.80,.05)
+DD=c(.95,.80,.05)
+CVR=c(.05,.95,.80)
+ORV=c(.05,.95,.95)
+
+pve=data.frame(CP,DD,CVR,ORV)
+vaxcats=colnames(pve)
+dogcats=c("C", "SC", "NC")
+rownames(pve)=dogcats
+```
+
+# Vaccine Solutions
+
+At this point Wallace t al. (2019) describe an "iterative set of equations to 
+define the number of vaccinated dogs in each category by vaccine method, using 
+number of of vaccines. A pre-defined rank order is defined 
+to determine which category would be most accessible for a given method
+and allocated vaccines applied to that category first, before applying remainder 
+to the next category, until all vaccines used. Excess is waste"
+
+For example, the spreadsheet gives the following ranking
+
+```{r}
+
+#vaccine ranking
+C_V=c(1,1,3,3)
+SC_V=c(2,2,1,2)
+NC_V=c(3,3,2,1)
+
+pvr=t(data.frame(C_V,SC_V,NC_V))
+rownames(pve)=dogcats
+colnames(pve)=vaxcats
+pvr
+```
+
+I'm not sure why this is "predefined", since we can certainly turn the
+given efficacy into rank. Although I also note a small discrepancy
+in the ranking of SC given by the spreadsheet, so maybe there is another factor here.
+
+```{r}
+
+# turn efficacy into rank
+rank.pve=pve
+ad=cut(as.matrix(rank(-pve)), 3, labels=c(1:3))
+rank.pve[] <- as.numeric(ad)
+rank.pve
+```
+
+The online tool then starts with the idea that a given number of vaccines 
+have been obtained, and they need to be allocated using an iterative process
+embodied in their spreadsheet according to a predefined vaccine strategy.
+
+```{r}
+
+#vaccines obtained
+#St = total number of vaccine doses obtained
+#pm = proportion of doses allocated to each vaccination method 
+inj=20400
+ob=3600
+```
+
+Rather than examining a pre-determined vaccination strategy that may or may not be successful, it seems much simpler to simply allocate the vaccines to different methodss given the probability of success for the various dog categories using linear programming. 
+
+However, I do note that when this is done, there is no particular priority given to
+any dog category, so that we do need to define the end goal (i.e., 70% coverage in each category, or only in some high priority category). Otherwise, some optimal solutions end up with only 1 or 2 categories of dogs being vaccinated when there are not enough vaccines to go around. 
+
+Other constraints include:
+1. not exceeding the total number of vaccines, and 2. not exceeding the total
+number of dogs in each category. 
+
+Please note for reference that this is a "transportation problem" with additional constraints.
+
+```{r}
+
+#### optimize with constraints for a given number of 
+#### vaccines, using regular lp function
+library(lpSolve)
+obj=c(t(as.matrix(pve)))*100
+m <- 3
+n <- 4
+constr <- matrix (0 , n +m , n*m )
+for(i in 1:m){ 
+  for(j in 1:n){ 
+    constr[i, n*(i-1) + j] <- 1
+    constr[m+j, n*(i-1) + j] <- 1
+  }
+}
+# this array will ensure we cannot exceed the number of dogs in 
+# a category, and that a given the number of vaccines in a category
+# cannot exceed the total
+
+injc=c(1,1,1,0,1,1,1,0,1,1,1,0) # all categories summed cannot exceed inj vaccines
+obhc=c(0,0,0,1,0,0,0,1,0,0,0,1) #all categories summed cannot exceed obh vaccines
+cover1=c(c(1,1,1,1,0,0,0,0,1,1,1,1)) #required coverage C
+cover2=c(c(0,0,0,0,1,1,1,1,0,0,0,0)) #required coverage SC
+cover3=c(c(0,0,0,0,0,0,0,0,1,1,1,1)) #required coverage NC
+
+constr=rbind(constr, injc, obhc, cover1, cover2, cover3)
+rhs <- c(d[1], d[2], d[3], inj, inj, inj, 
+         ob, inj, ob, 0.7*d[1],0.7*d[2],0.7*d[3])
+constr.dir <- c(rep("<=",m ), rep("<=", n+2),
+                rep(">=",3))
+
+
+prod.trans <- lp ("max", objective.in=obj, 
+                  constr, constr.dir, rhs)
+soln=(matrix(prod.trans$solution, nrow=4))
+solntab=(rbind(soln,colSums(soln)/d ))
+colnames(solntab)=dogcats
+rownames(solntab)=c(vaxcats, "%vax")
+knitr::kable(solntab, digits=2, caption="Table: Optimal vaccine allocation strategy")
+
+```
+
+This solution gives us good coverage, but I bet the expense of CVR makes it untenable. Next up... incorporate uncertainty.
