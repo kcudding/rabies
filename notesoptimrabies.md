@@ -166,7 +166,7 @@ for(i in 1:m){
 
 injc=c(1,1,1,0,1,1,1,0,1,1,1,0) # all categories summed cannot exceed inj vaccines
 obhc=c(0,0,0,1,0,0,0,1,0,0,0,1) #all categories summed cannot exceed obh vaccines
-cover1=c(c(1,1,1,1,0,0,0,0,1,1,1,1)) #required coverage C
+cover1=c(c(1,1,1,1,0,0,0,0,0,0,0,0)) #required coverage C
 cover2=c(c(0,0,0,0,1,1,1,1,0,0,0,0)) #required coverage SC
 cover3=c(c(0,0,0,0,0,0,0,0,1,1,1,1)) #required coverage NC
 
@@ -199,3 +199,237 @@ Table: Table: Optimal vaccine allocation strategy
 |%vax |    1|    0.77|    0.7|
 
 This solution gives us good coverage, but I bet the expense of CVR makes it untenable. Next up... incorporate uncertainty.
+
+
+## Uncertainty
+
+
+Confidence intervals for these predictions are not easy to generate analytically (*ref). Instead, we will use a Monte Carlo method to quantify uncertainty. To do this we will use the beta distribution. This is a continuous probability distribution that models random variables with values falling inside a finite interval, and we can use it to model the success rates of the vaccination methods, since these have both an upper and lower bound for possible values. 
+
+The beta distribution has two shape parameters, α and β. Both parameters must be positive values. The distribution is particularly flexible at modeling different curves within the interval, including symmetrical, left and right-skewed, U and inverted U shapes, and straight lines. Using its tight relationship to the binomial distribution, with 10 trials and 7 successes we would have: 
+    α = 7 + 1 = 8,
+    β = 10 – 7 + 1 = 4
+
+For example, 
+
+
+```r
+## Visualization, including limit cases:
+pl.beta <- function(a,b, asp = if(isLim) 1, ylim = if(isLim) c(0,1.1)) {
+  if(isLim <- a == 0 || b == 0 || a == Inf || b == Inf) {
+    eps <- 1e-10
+    x <- c(0, eps, (1:7)/16, 1/2+c(-eps,0,eps), (9:15)/16, 1-eps, 1)
+  } else {
+    x <- seq(0, 1, length.out = 1025)
+  }
+  fx <- cbind(dbeta(x, a,b), pbeta(x, a,b), qbeta(x, a,b))
+  f <- fx; f[fx == Inf] <- 1e100
+  matplot(x, f, ylab="", type="l", ylim=ylim, asp=asp,
+          main = sprintf("[dpq]beta(x, a=%g, b=%g)", a,b))
+  abline(0,1,     col="gray", lty=3)
+  abline(h = 0:1, col="gray", lty=3)
+  legend("top", paste0(c("d","p","q"), "beta(x, a,b)"),
+         col=1:3, lty=1:3, bty = "n")
+  invisible(cbind(x, fx))
+}
+
+aval=7+1
+bval=10-7+1
+
+aval
+```
+
+```
+[1] 8
+```
+
+```r
+bval
+```
+
+```
+[1] 4
+```
+
+```r
+pl.beta(aval, bval)
+```
+
+![](notesoptimrabies_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+
+Then we use this distribution with many simulations
+
+
+```r
+# function to generate random vaccine efficacy matrix
+rbpve<-function(x){
+aval=x*10+1
+bval=10-x*10+1
+y=rbeta(1, aval, bval)
+return(y)
+}
+
+# function to calculate optimal allocation with random matrix draw
+# many times
+randvax<-function(pve,d) {
+covmat=matrix(NA, nrow=100, ncol=3)
+mclist=list()
+plist=list()
+for (i in 1:100){
+  p=apply(pve, c(1,2), rbpve)
+  plist[[i]]=p
+  obj=c(t(as.matrix(p)))*100
+  prod.trans <- lp ("max", objective.in=obj,constr, constr.dir, rhs)
+
+  soln=(matrix(prod.trans$solution, nrow=4))
+mclist[[i]]=soln
+covmat[i,]=colSums(soln)/d
+}
+return(list(mclist, covmat, plist))
+}
+multilist=randvax(pve,d)
+
+#function to tabulate the resulting simulations
+
+tabprep<-function(flist) {
+mclist=multilist[1]
+plist=multilist[3]
+#  Make a 3D array from list of matrices
+arr <- array( unlist(mclist) , c(4,3,100) )
+parr<-array( unlist(plist) , c(3,4,100) )
+
+#  Get summaries of third dimension
+mdarr=apply( arr , 1:2 , median)
+mxarr=apply( arr , 1:2 , max)
+mnarr=apply( arr , 1:2 , min)
+
+mdp=round(apply( parr , 1:2 , median), 2)
+mxp=round(apply( parr , 1:2 , max), 2)
+mnp=round(apply( parr , 1:2 , min), 2)
+pmat=matrix(paste(mdp, "(", mnp, "-", mxp, ")"), nrow=3,ncol=4)
+row.names(pmat)=dogcats
+omat=t(matrix(paste(mdarr, "(", mnarr, "-", mxarr, ")"), nrow=3,ncol=4, byrow=T))
+covmat=matrix(unlist(multilist[2]),  ncol=3)
+cmax=apply(covmat, 2, max)
+cmin=apply(covmat, 2, min)
+cmed=apply(covmat, 2, median)
+crow=paste(cmed, "(", cmin, "-", cmax, ")")
+omat=rbind(omat, crow)
+colnames(omat)=dogcats
+rownames(omat)=c(vaxcats, "%vax")
+
+
+return(list(pmat, omat))
+
+}
+tablist=tabprep(multilist)
+pmat=tablist[1]
+
+#Print the results
+knitr::kable(pmat, digits=2, caption="Table: Median and range of vaccine efficacy values", col.names=vaxcats)
+```
+
+
+
+<table class="kable_wrapper">
+<caption>Table: Median and range of vaccine efficacy values</caption>
+<tbody>
+  <tr>
+   <td> 
+
+|   |CP                   |DD                   |CVR                  |ORV                  |
+|:--|:--------------------|:--------------------|:--------------------|:--------------------|
+|C  |0.9 ( 0.62 - 0.99 )  |0.9 ( 0.54 - 1 )     |0.1 ( 0 - 0.65 )     |0.11 ( 0.01 - 0.57 ) |
+|SC |0.76 ( 0.32 - 0.98 ) |0.79 ( 0.47 - 0.96 ) |0.91 ( 0.61 - 1 )    |0.9 ( 0.56 - 1 )     |
+|NC |0.12 ( 0.01 - 0.4 )  |0.1 ( 0 - 0.36 )     |0.77 ( 0.38 - 0.94 ) |0.9 ( 0.57 - 1 )     |
+
+ </td>
+  </tr>
+</tbody>
+</table>
+
+```r
+omat=tablist[2]
+knitr::kable(omat, digits=2, caption="Table: Optimal vaccine allocation strategy (median, min - max)", col.names=dogcats)
+```
+
+
+
+<table class="kable_wrapper">
+<caption>Table: Optimal vaccine allocation strategy (median, min - max)</caption>
+<tbody>
+  <tr>
+   <td> 
+
+|     |C                 |SC                            |NC                              |
+|:----|:-----------------|:-----------------------------|:-------------------------------|
+|CP   |6720 ( 0 - 8400 ) |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
+|DD   |0 ( 0 - 8400 )    |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
+|CVR  |0 ( 0 - 0 )       |5520 ( 0 - 7200 )             |6480 ( 6480 - 13080 )           |
+|ORV  |0 ( 0 - 0 )       |0 ( 0 - 3600 )                |3600 ( 0 - 3600 )               |
+|%vax |1 ( 0.7 - 1 )     |0.766666666666667 ( 0.7 - 1 ) |0.7 ( 0.7 - 0.908333333333333 ) |
+
+ </td>
+  </tr>
+</tbody>
+</table>
+
+It's not clear to me that the best way to portray the range of outcomes....
+
+
+
+We may also have uncertainty in the number of dogs, and/or the number of dogs in each category.
+
+We can use a beta distribution for proportions and a standard normal distribution for the total numbers.
+
+
+```r
+#Let's assume a 20% CV for total dog numbers, and no randomness in proportions to start
+
+sddogs=.2*Dt
+
+for (j in 1:10){
+  nDt=rnorm(1, Dt, sddogs)
+print(nDt)
+d=nDt*pC
+multilist=randvax(pve,d)
+}
+```
+
+```
+[1] 22717.71
+[1] 31967.26
+[1] 29866.3
+[1] 38124.6
+[1] 28351.84
+[1] 31287.45
+[1] 24769.49
+[1] 29828.51
+[1] 32558.02
+[1] 34658.81
+```
+
+```r
+# not satisfactory since we have to run 100*# reps of dogs
+# could just change function manually, or...
+
+
+#idea to change function def on the fly to incorporate dog # variability
+# first save the definition as a list of string
+##newDef <- deparse(vis.gam)
+
+# then identify the line to be changed using regular expressions
+# (see ?regexp)
+##iLine <- grep("gray\\(seq\\(",initDef)
+
+# replace the line by what you want
+##newDef[iLine] <- "            pal <- gray(seq(0.9, 0.1, length = nCol))"
+
+# and define a new function by parsing and evaluating the 
+# new definition
+##vis.gam2 <- eval(parse(text=newDef))
+
+## Next up
+#change the constraints from number of vax units to $$
+```
