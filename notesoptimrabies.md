@@ -1,5 +1,5 @@
 ---
-title: "optimize rabies campaign: take 1"
+title: "optimize rabies campaign: take 4 with cost component"
 author: "Kim Cuddington"
 date: "07/05/2022"
 output: 
@@ -201,16 +201,16 @@ Table: Table: Optimal vaccine allocation strategy
 This solution gives us good coverage, but I bet the expense of CVR makes it untenable. Next up... incorporate uncertainty.
 
 
-## Uncertainty
+## Uncertainty in effective vaccine delivery 
 
 
-Confidence intervals for these predictions are not easy to generate analytically (*ref). Instead, we will use a Monte Carlo method to quantify uncertainty. To do this we will use the beta distribution. This is a continuous probability distribution that models random variables with values falling inside a finite interval, and we can use it to model the success rates of the vaccination methods, since these have both an upper and lower bound for possible values. 
+Confidence intervals for these predictions are not easy to generate analytically (*ref). Instead, we will use a Monte Carlo method to quantify uncertainty. To do this for the probability of delivery an effective vaccine dose for each category of dog and vaccination method, we will draw random values from a beta distribution and calculate the optimization solution many times. 
 
-The beta distribution has two shape parameters, α and β. Both parameters must be positive values. The distribution is particularly flexible at modeling different curves within the interval, including symmetrical, left and right-skewed, U and inverted U shapes, and straight lines. Using its tight relationship to the binomial distribution, with 10 trials and 7 successes we would have: 
+the beta distribution is a continuous probability distribution that models random variables with values falling inside a finite interval, and we can use it to model the success rates of the vaccination methods (bounded by 0 and 1). The distribution is particularly flexible at modeling different curves within the interval, including symmetrical, left and right-skewed, U and inverted U shapes, and straight lines. The  two shape parameters, α and β determine the shape and must be positive.  Using the tight relationship between the beta and binomial distribution, we can set these parameters easily, for example with 10 trials and 7 successes we would have: 
     α = 7 + 1 = 8,
     β = 10 – 7 + 1 = 4
 
-For example, 
+which would give a left-skewed distribution centered on 0.7.
 
 
 ```r
@@ -258,7 +258,7 @@ pl.beta(aval, bval)
 ![](notesoptimrabies_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
 
-Then we use this distribution with many simulations
+Then we use this distribution with many simulations, using our original probability values.
 
 
 ```r
@@ -272,7 +272,9 @@ return(y)
 
 # function to calculate optimal allocation with random matrix draw
 # many times
-randvax<-function(pve,d) {
+
+randvax<-function(pve,d, Dp, C, NC) {
+
 covmat=matrix(NA, nrow=100, ncol=3)
 mclist=list()
 plist=list()
@@ -288,8 +290,19 @@ covmat[i,]=colSums(soln)/d
 }
 return(list(mclist, covmat, plist))
 }
-multilist=randvax(pve,d)
+multilist=randvax(pve,d, Dp=Dt, C=C, NC=C)
 
+newvax<-function(pve,d, Dp, C, NC) {
+  print(Dp)
+}
+newvax(pve,d, Dp=Dt, C, NC)
+```
+
+```
+[1] 30000
+```
+
+```r
 #function to tabulate the resulting simulations
 
 tabprep<-function(flist) {
@@ -340,9 +353,9 @@ knitr::kable(pmat, digits=2, caption="Table: Median and range of vaccine efficac
 
 |   |CP                   |DD                   |CVR                  |ORV                  |
 |:--|:--------------------|:--------------------|:--------------------|:--------------------|
-|C  |0.9 ( 0.62 - 0.99 )  |0.9 ( 0.54 - 1 )     |0.1 ( 0 - 0.65 )     |0.11 ( 0.01 - 0.57 ) |
-|SC |0.76 ( 0.32 - 0.98 ) |0.79 ( 0.47 - 0.96 ) |0.91 ( 0.61 - 1 )    |0.9 ( 0.56 - 1 )     |
-|NC |0.12 ( 0.01 - 0.4 )  |0.1 ( 0 - 0.36 )     |0.77 ( 0.38 - 0.94 ) |0.9 ( 0.57 - 1 )     |
+|C  |0.88 ( 0.62 - 0.99 ) |0.91 ( 0.58 - 0.99 ) |0.13 ( 0 - 0.45 )    |0.11 ( 0.01 - 0.35 ) |
+|SC |0.78 ( 0.32 - 0.99 ) |0.74 ( 0.4 - 0.97 )  |0.89 ( 0.52 - 1 )    |0.88 ( 0.64 - 0.99 ) |
+|NC |0.1 ( 0 - 0.57 )     |0.08 ( 0.01 - 0.37 ) |0.77 ( 0.39 - 0.95 ) |0.9 ( 0.65 - 1 )     |
 
  </td>
   </tr>
@@ -364,8 +377,8 @@ knitr::kable(omat, digits=2, caption="Table: Optimal vaccine allocation strategy
 
 |     |C                 |SC                            |NC                              |
 |:----|:-----------------|:-----------------------------|:-------------------------------|
-|CP   |6720 ( 0 - 8400 ) |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
-|DD   |0 ( 0 - 8400 )    |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
+|CP   |0 ( 0 - 8400 )    |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
+|DD   |6720 ( 0 - 8400 ) |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
 |CVR  |0 ( 0 - 0 )       |5520 ( 0 - 7200 )             |6480 ( 6480 - 13080 )           |
 |ORV  |0 ( 0 - 0 )       |0 ( 0 - 3600 )                |3600 ( 0 - 3600 )               |
 |%vax |1 ( 0.7 - 1 )     |0.766666666666667 ( 0.7 - 1 ) |0.7 ( 0.7 - 0.908333333333333 ) |
@@ -377,59 +390,227 @@ knitr::kable(omat, digits=2, caption="Table: Optimal vaccine allocation strategy
 
 It's not clear to me that the best way to portray the range of outcomes....
 
-
+## Uncertainty in the dog population size and distribution
 
 We may also have uncertainty in the number of dogs, and/or the number of dogs in each category.
 
-We can use a beta distribution for proportions and a standard normal distribution for the total numbers.
+We can use a beta distribution for proportions and a standard normal distribution for the total numbers. Again we will categorize the effect of uncertainty by running many simulations with a random selection from the relevant distributions. In this case the distribution of the dog population across the categories of *C*onfined, *S*ometimes *C*onfinded and *N*ever *C*confined is constrained so that it sums to one.
 
 
 ```r
-#Let's assume a 20% CV for total dog numbers, and no randomness in proportions to start
+#Let's assume a 20% CV for total dog numbers
+D=30000
+C=0.28
+NC=0.48
+SC=1-(C+NC)
+fprd=c(SC,NC)
+#sddogs=.2*Dt
+pclist=matrix(NA, nrow=100, ncol=3)
+covmat=matrix(NA, nrow=100, ncol=3)
+mclist=list()
+plist=list()
 
-sddogs=.2*Dt
+for (j in 1:100){
+   rD=rnorm(1, D, 0.2*D)
+  Dt=rD
+pd=sapply(fprd, rbpve)
+SC=pd[1];NC=pd[2]
+NC=ifelse(NC+SC>1, 1-SC,NC)
+C=1-(SC+NC)
+C=ifelse(C<0, 0, C)
+pC=c(C,SC,NC)
 
-for (j in 1:10){
-  nDt=rnorm(1, Dt, sddogs)
-print(nDt)
-d=nDt*pC
-multilist=randvax(pve,d)
+d=Dt*pC
+
+#save the random dog pop
+pclist[j,]=d
+rhs <- c(d[1], d[2], d[3], inj, inj, inj, 
+         ob, inj, ob, 0.7*d[1],0.7*d[2],0.7*d[3])
+#  p=apply(pve, c(1,2), rbpve)
+  p=pve
+  plist[[j]]=p
+  obj=c(t(as.matrix(p)))*100
+  prod.trans <- lp ("max", objective.in=obj,constr, constr.dir, rhs)
+
+  soln=(matrix(prod.trans$solution, nrow=4))
+mclist[[j]]=soln
+covmat[j,]=colSums(soln)/d
 }
+#  Make a 3D array from list of matrices
+arr <- array( unlist(mclist) , c(4,3,10) )
+#parr<-array( unlist(plist) , c(3,4,100) )
+
+#  Get summaries of third dimension
+ddarr=round(apply( pclist , 2 , median),0)
+dxarr=round(apply( pclist , 2 , max),0)
+dnarr=round(apply( pclist , 2 , min),0)
+dmat=(paste(ddarr, "(", dnarr, "-", dxarr, ")"))
+
+#  Get summaries of third dimension
+mdarr=round(apply( arr , 1:2 , median),0)
+mxarr=round(apply( arr , 1:2 , max),0)
+mnarr=round(apply( arr , 1:2 , min),0)
+omat=t(matrix(paste(mdarr, "(", mnarr, "-", mxarr, ")"), nrow=3,ncol=4, byrow=T))
+
+cmax=round(apply(covmat, 2, function(x) max(x, na.rm=T)),2)
+cmin=round(apply(covmat, 2, function(x) min(x, na.rm=T)),2)
+cmed=round(apply(covmat, 2, function(x) median(x, na.rm=T)),2)
+cmin=ifelse(is.na(cmin), 0,cmin)
+crow=paste(cmed, "(", cmin, "-", cmax, ")")
+omat=rbind(omat, crow)
+
+colnames(omat)=dogcats
+rownames(omat)=c(vaxcats, "%vax")
+```
+
+Our simulations provide a range of always confined dogs (7331 ( 0 - 20630 )), semi-confined(7633 ( 1097 - 26502 )), and never confined dogs (14363 ( 3116 - 28387 )), which produces  a range of vaccination outcomes for a fixed number of vaccines (injections = 2.04\times 10^{4} and baits = 3600), but overall, a standard strategy emerges for this level of uncertainty in the dog populations.
+
+We could also simultaneously vary the uncertainty about the dog population and the vaccine delivery efficacy, but I'm not sure this is useful when we have a range of dog categories that is sometimes zero? We need a better way to perhaps plot/categorize these different scenarios
+
+
+
+Table: Table: Optimal vaccine allocation strategy for fixed number of vaccines (median, min - max)
+
+|     |C                  |SC                |NC                 |
+|:----|:------------------|:-----------------|:------------------|
+|CP   |4327 ( 0 - 10597 ) |0 ( 0 - 0 )       |0 ( 0 - 0 )        |
+|DD   |0 ( 0 - 0 )        |0 ( 0 - 0 )       |0 ( 0 - 0 )        |
+|CVR  |0 ( 0 - 0 )        |4003 ( 0 - 9160 ) |5983 ( 0 - 11079 ) |
+|ORV  |0 ( 0 - 0 )        |0 ( 0 - 0 )       |3600 ( 0 - 3600 )  |
+|%vax |1 ( 0 - 1 )        |0.76 ( 0 - 1 )    |0.7 ( 0 - 1 )      |
+
+## Find optimal solultion for expediture
+
+Rather than assuming we have already acquired a fixed amount of vaccines, we could determine the optimal strategy for vaccine purchase based on minimizing cost and maximizing coverage. 
+
+**In this case we need to change the constraints of our optimization so that rather than not exceeding a maximum number of vaccines, each category does not exceed some budget amount (possibly?).**
+
+I've started by just not exceeding the number of dogs
+
+The cost is made up of the vaccine cost (small), and the delivery cost (variable) with method
+
+
+Ugh... while doing this, it became apparent that the cost of delivery *HAS* to vary with dog type. I had assumed a low cost for each CP delivered injectable vaccine ($10 USD), and while there is a low efficacy given for NC dogs and this method (5%), that still works out to a relatively low per unit cost and is preferred by the optimal solution, when it is clearly not right (i.e., why would you drive a captured dog back to CP rather than vaccinate in the van!!). 
+
+I separated out the costs a bit, and used 1/efficacy to adjust for this effect, but need to look at these estimates far more closely since this solution to the above issue gives an outlandish cost per successful unit for CVR on C dogs.
+
+
+
+
+
+```r
+# use made up costs for original dog and pve estimates
+Dt=30000
+C=0.28
+NC=0.48
+SC=1-(C+NC)
+pC=c(C,SC,NC)
+d=Dt*pC
+
+#madeup costs (can check Gibson et al 2020 for realish values)
+costvax=c(1,1, 1, 3 )
+numpeople=c(1,2,6,2)
+equip=c(10,2,20,2) #really these are fixed costs and need a different method of incorporation probably equip+people+costvax
+
+bcost=costvax*numpeople*equip
+
+pvecd=1/pve
+pvecd=bcost*t(pvecd)
+
+
+#manual adjust on the cost matrix(
+ #CP and DD not really possible for NC ??
+
+
+#dummy=c(1000,1000,1000) #use for unbalanced sol'n
+#pvecdd=rbind(pvecd,dummy)
+
+pvecdd=pvecd
+obj=c((as.matrix(pvecdd)))
+m <- 3
+n <- 4
+constr <- matrix (0 , n +m , n*m )
+for(i in 1:m){ 
+  for(j in 1:n){ 
+    constr[i, n*(i-1) + j] <- 1
+    constr[m+j, n*(i-1) + j] <- 1
+  }
+}
+# this array will ensure we cannot exceed the number of dogs in 
+# a category
+
+
+cover1=c(c(pve[1,1],pve[1,2],pve[1,3],pve[1,4],0,0,0,0,0,0,0,0)) #required coverage C
+cover2=c(c(0,0,0,0,pve[2,1],pve[2,2],pve[2,3],pve[2,4],0,0,0,0)) #required coverage SC
+cover3=c(c(0,0,0,0,0,0,0,0,pve[3,1],pve[3,2],pve[3,3],pve[3,4])) #required coverage NC
+
+
+
+constr=rbind(constr, cover1, cover2, cover3)
+rhs <- c(d[1], d[2], d[3],  rep(0.7*sum(d),4), 0.7*d[1],0.7*d[2],0.7*d[3])
+constr.dir <- c(rep(">=",3 ), rep("<=", 4),
+                rep(">=",3))
+
+
+
+prod.trans <- lp ("min", objective.in=obj, 
+                  constr, constr.dir, rhs)
+rm(soln)
+soln=(matrix(prod.trans$solution, nrow=4))
+
+
+pvex=soln*t(pve)
+solntab=(rbind(soln,colSums(pvex)/d ))
+solntab=rbind(solntab,d)
+colnames(solntab)=dogcats
+rownames(solntab)=c(vaxcats,"%vax", "dogs")
+solntab
 ```
 
 ```
-[1] 22717.71
-[1] 31967.26
-[1] 29866.3
-[1] 38124.6
-[1] 28351.84
-[1] 31287.45
-[1] 24769.49
-[1] 29828.51
-[1] 32558.02
-[1] 34658.81
+           C     SC       NC
+CP      0.00    0.0     0.00
+DD   8400.00 7200.0     0.00
+CVR     0.00    0.0     0.00
+ORV     0.00    0.0 14400.00
+%vax    0.95    0.8     0.95
+dogs 8400.00 7200.0 14400.00
 ```
 
 ```r
-# not satisfactory since we have to run 100*# reps of dogs
-# could just change function manually, or...
-
-
-#idea to change function def on the fly to incorporate dog # variability
-# first save the definition as a list of string
-##newDef <- deparse(vis.gam)
-
-# then identify the line to be changed using regular expressions
-# (see ?regexp)
-##iLine <- grep("gray\\(seq\\(",initDef)
-
-# replace the line by what you want
-##newDef[iLine] <- "            pal <- gray(seq(0.9, 0.1, length = nCol))"
-
-# and define a new function by parsing and evaluating the 
-# new definition
-##vis.gam2 <- eval(parse(text=newDef))
-
-## Next up
-#change the constraints from number of vax units to $$
+knitr::kable(pvecdd, digits=2, caption="Table: Vax costs * 1/efficacy: cost per unit unit successful vax")
 ```
+
+
+
+Table: Table: Vax costs * 1/efficacy: cost per unit unit successful vax
+
+|    |       C|     SC|     NC|
+|:---|-------:|------:|------:|
+|CP  |   10.53|  12.50| 200.00|
+|DD  |    4.21|   5.00|  80.00|
+|CVR | 2400.00| 126.32| 150.00|
+|ORV |  240.00|  12.63|  12.63|
+
+```r
+knitr::kable(solntab, digits=2, caption="Table: Optimal vaccine allocation strategy")
+```
+
+
+
+Table: Table: Optimal vaccine allocation strategy
+
+|     |       C|     SC|       NC|
+|:----|-------:|------:|--------:|
+|CP   |    0.00|    0.0|     0.00|
+|DD   | 8400.00| 7200.0|     0.00|
+|CVR  |    0.00|    0.0|     0.00|
+|ORV  |    0.00|    0.0| 14400.00|
+|%vax |    0.95|    0.8|     0.95|
+|dogs | 8400.00| 7200.0| 14400.00|
+
+```r
+campcost=soln*bcost
+```
+
+This optimal solution has a total cost of $2.352\times 10^{5} assuming costs of $10, 4, 120, 12 for CP, DD, CVR, and OB respectively
