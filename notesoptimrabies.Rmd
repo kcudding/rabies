@@ -1,5 +1,5 @@
 ---
-title: "optimize rabies campaign: take 4 with cost component"
+title: "optimize rabies campaign: take 5 with costs from Wallace et al. 2019"
 author: "Kim Cuddington"
 date: "07/05/2022"
 output: 
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, comment="", warning=F)
 
 # Optimizing rabies vaccine programs for dogs
 
-Our goal is to use standard optimization tools to find the most cost-effective rabies vaccination strategy. This doc is take 1: get an optimal vaccination plan for a given number of vaccines and dogs.
+Our goal is to use standard optimization tools to find the most cost-effective rabies vaccination strategy. This doc is take 5: find best and lowest cost solution.
 
 We're using information from:
 
@@ -427,7 +427,6 @@ I separated out the costs a bit, and used 1/efficacy to adjust for this effect, 
 
 
 
-
 ```{r}
 # use made up costs for original dog and pve estimates
 Dt=30000
@@ -438,6 +437,8 @@ pC=c(C,SC,NC)
 d=Dt*pC
 
 #madeup costs (can check Gibson et al 2020 for realish values)
+
+
 costvax=c(1,1, 1, 3 )
 numpeople=c(1,2,6,2)
 equip=c(10,2,20,2) #really these are fixed costs and need a different method of incorporation probably equip+people+costvax
@@ -502,3 +503,136 @@ campcost=soln*bcost
 ```
 
 This optimal solution has a total cost of $`r sum(campcost)` assuming per unit costs of $`r bcost` for CP, DD, CVR, and OB respectively
+
+
+
+## Costs from Wallace
+
+Instead, we can take the costs from the spreadsheets created by Wallace et al. (2019)
+To use the values, we will assume that costs scale linearly with campaign size
+
+```{r}
+#read
+library(openxlsx)
+cost=read.xlsx("Wallacecosts_S0950268819001158sup003.xlsx",
+sheet=4,rows=c(28:73),cols=c(1:7),
+startRow = 28)
+cost=cost[complete.cases(cost),]
+colnames(cost)[4:6]=c("low_unit_cost", "mean_unit_cost", "hi_unit_cost")
+cost=as.data.frame(cost)
+cost[,2:6]=apply(cost[,2:6], 2, function(x) as.numeric(x, na.rm=TRUE))
+
+knitr::kable(cost, digits=2, caption="Table: Vaccination costs")
+
+rate=read.xlsx("Wallacecosts_S0950268819001158sup003.xlsx",colNames=FALSE,
+sheet=4,rows=c(5:8),cols=c(1:3))
+
+```
+
+
+For total costs we will need the number of units needed for these items, but there a complication here, for some items the number of units is a calculated quantity from the spreadsheet. I was not able to figure out exactly what the calculation is in some cases, and I can't figure out why the DD and OBH technicians are at zero since the number of OBH vaccines is at 3600. At any rate the number of personnel units certainly comes from the number of vaccinations by a particular method, which is not optimized. 
+
+The differences in the estimated cost per unit of vaccination personnel are not that large (mean range `r min(cost[3:6, 5])` -  `r max(cost[3:6, 5])`). Driver and supervisor costs are different. So, for vaccination staff, I think we can do the same thing as above by specifying the minimum number of people required to complete one vaccination by that method, to create a min daily cost.
+
+Other items are given per unit cost so we can use that directly, still other items are minimum fixed cost, but will need multiplication when the number of vaccinations is determined by optimization. Some items (CVR kits) have a per unit cost, but no indication of how many kits are required per team? dog?  Others indicate the number per dog vaccinated (e.g., CP/DD Bite PEP (1 in 2,000)) and can be standardized to per dog.
+
+
+So, we will optimize based on the minimum per dose costs, but this may lead to greater total costs? 
+
+
+```{r}
+#What is our minimum per dose cost for each method?
+
+#costvax=c(1,1, 1, 3 )
+
+injvaxcost=sum(cost[27:30, 5])
+obcost=2.5 #median of range quoted by williams in another paper is 3 (REF)? at this value not cost effective
+
+costvax=c(injvaxcost, injvaxcost,injvaxcost,obcost)
+
+#the use rate of mean salary
+# and guestimate of the number of vaccination staff required per vax
+# perhaps a lower number per CVR? certainly exclude the driver
+# then divide by per person day vax rate
+numpeople=c(1,2,5,2)*mean(cost[3:6, 5])/rate[,2]
+
+#assume motorcycle/moped for DD and OBH
+#assume van for VCR
+
+
+#not sure what the government vehicle does? or is how different?
+
+# and this per day? so divide by number of dogs/person/day
+
+ #costs between van and cycle not distinguished here? assume 2x
+vehrent=sum(cost[11:12,5])/rate[,2]
+vehrent=vehrent*c(1,1,2,1)
+
+ 
+#specialized costs (so exclude coolers here)
+#for example CVR kit...what is the per dog rate of this?? all dogs?
+CVRcost=cost[21,5]/20000+cost[25,5]/500+cost[8,5]/rate[4,2] ##kit, human rabies treat,driver
+CPDDcost=cost[24,5]/2000
+OBcost=cost[24,5]/1000 #assume higher than dd/cp, but lower than 
+equip=c(CPDDcost,CPDDcost,CVRcost,OBcost) #really these are fixed costs and need a different method of incorporation probably equip+people+costvax
+
+bcost=costvax+numpeople+equip
+#the absolute largest item here is the per unit cost
+# of the OB at 3.00
+
+
+pvecd=1/pve
+pvecd=bcost*t(pvecd)
+
+```
+
+When calculating total costs, we will need to use dogs/person/day. However, the number of dogs/person/day for each method seems quite high for CVR and OBH, moreover CVR rate is the same as DD and CP?? I don't think these quantities are based on any data. We'll get these from Gibson. In another section.
+
+
+```{r}
+pvecdd=pvecd
+obj=c((as.matrix(pvecdd)))
+m <- 3
+n <- 4
+constr <- matrix (0 , n +m , n*m )
+for(i in 1:m){ 
+  for(j in 1:n){ 
+    constr[i, n*(i-1) + j] <- 1
+    constr[m+j, n*(i-1) + j] <- 1
+  }
+}
+# this array will ensure we cannot exceed the number of dogs in 
+# a category
+
+
+cover1=c(c(pve[1,1],pve[1,2],pve[1,3],pve[1,4],0,0,0,0,0,0,0,0)) #required coverage C
+cover2=c(c(0,0,0,0,pve[2,1],pve[2,2],pve[2,3],pve[2,4],0,0,0,0)) #required coverage SC
+cover3=c(c(0,0,0,0,0,0,0,0,pve[3,1],pve[3,2],pve[3,3],pve[3,4])) #required coverage NC
+
+
+
+constr=rbind(constr, cover1, cover2, cover3)
+rhs <- c(d[1], d[2], d[3],  rep(0.7*sum(d),4), 0.7*d[1],0.7*d[2],0.7*d[3])
+constr.dir <- c(rep(">=",3 ), rep("<=", 4),
+                rep(">=",3))
+
+
+
+prod.trans <- lp ("min", objective.in=obj, 
+                  constr, constr.dir, rhs)
+rm(soln)
+soln=(matrix(prod.trans$solution, nrow=4))
+
+
+pvex=soln*t(pve)
+solntab=(rbind(soln,colSums(pvex)/d ))
+solntab=rbind(solntab,d)
+colnames(solntab)=dogcats
+rownames(solntab)=c(vaxcats,"%vax", "dogs")
+solntab
+knitr::kable(pvecdd, digits=2, caption="Table: Vax costs * 1/efficacy: cost per unit unit successful vax")
+knitr::kable(solntab, digits=2, caption="Table: Optimal vaccine allocation strategy")
+campcost=soln*bcost
+```
+
+So again, solution goes with lowest cost items. If oral baits $.50 more expensive, should go with CVR 
