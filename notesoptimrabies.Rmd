@@ -1,5 +1,5 @@
 ---
-title: "optimize rabies campaign: take 5 with costs from Wallace et al. 2019"
+title: "optimize rabies campaign: take 6 with costs from Gibson et al. 2020"
 author: "Kim Cuddington"
 date: "07/05/2022"
 output: 
@@ -9,6 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, comment="", warning=F)
+options(scipen=999)
 ```
 
 # Optimizing rabies vaccine programs for dogs
@@ -635,4 +636,174 @@ knitr::kable(solntab, digits=2, caption="Table: Optimal vaccine allocation strat
 campcost=soln*bcost
 ```
 
-So again, solution goes with lowest cost items. If oral baits $.50 more expensive, should go with CVR 
+Total cost of the campaign is then `r sum(campcost)`. So again, solution goes with lowest cost items. If oral baits $.50 more expensive, should go with CVR 
+
+## Personnel needed
+
+Given this allocation, how many staff would we need? We will assume that DD and OBH are teams of 2, CVR is a team of 5 plus driver. To start let's use the dogs/person/day from Wallace et al. (2019)
+
+```{r}
+
+#Calc needed person/days
+
+meths=solntab[1:4,]
+methunits=rowSums(meths)
+pdays=methunits/rate[,2]
+
+#Calc needed persons (/by campaign days)
+# one month?
+
+staff=pdays/30
+tstaff=sum(staff)
+
+
+```
+
+This calculation gives total staff needed to deliver `r sum(meths)` vaccinations, as `r round(tstaff, 0)` for 30 days. Seems implausible?
+
+
+## Read in Gibson materials instead?
+
+
+```{r gibson}
+
+# Gibson, A. D., Wallace, R. M., Rahman, A., Bharti, O. K., Isloor, S., Lohr, F., ... & Day, M. J. (2020). Reviewing solutions of scale for canine rabies elimination in India. Tropical medicine and infectious disease, 5(1), 47.
+
+# Gibson 2020 Overall staff rate (dogs/person/day) OBH-DD=41 CVR=14.6 DD=23.9
+# Scenarios for dog population size in Bangalore city were calculated based on best, mean and worse case scenarios for available dog-to-human ratios in Indian urban settings; Scenario A 83:1, (B) 50:1, (C) 23:1
+
+# there are separate spreadsheets for each of these SUpplementary materials 1 https://www.mdpi.com/2414-6366/5/1/47
+
+rm(cost)
+costG=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",
+sheet=4,rows=c(28:73),cols=c(1:7),
+startRow = 28)
+costG=costG[complete.cases(costG),]
+colnames(costG)[4:6]=c("low_unit_cost", "mean_unit_cost", "hi_unit_cost")
+costG=as.data.frame(costG)
+costG[,2:6]=apply(costG[,2:6], 2, function(x) as.numeric(x, na.rm=TRUE))
+
+knitr::kable(costG, digits=2, caption="Table: Vaccination costs Gibson et al. 2020")
+
+rateG=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",colNames=FALSE,
+sheet=4,rows=c(5:8),cols=c(1:3))
+#these are NOT right on the Gibson sheet
+
+
+#use capacity from scenario
+rateG=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",colNames=FALSE,
+sheet=6,rows=c(33:36),cols=c(1:2))
+
+```
+
+
+```{r}
+
+#What is our minimum per dose cost for each method?
+
+#costvax=c(1,1, 1, 3 )
+
+injvaxcost=sum(costG[c(27, 29:30), 5])
+obcost=sum(costG[c(28,30), 5]) #median of range quoted by williams in another paper is 3 (REF)? at this value not cost effective
+
+costvax=c(injvaxcost, injvaxcost,injvaxcost,obcost)
+
+#the use rate of mean salary
+# and guestimate of the number of vaccination staff required per vax
+# perhaps a lower number per CVR? certainly exclude the driver
+# then divide by per person day vax rate
+numpeople=c(1,2,5,2)*mean(costG[4:7, 5])/rateG[,2]
+
+#assume motorcycle/moped for DD and OBH
+#assume van for VCR
+
+
+#not sure what the government vehicle does? or is how different?
+
+# and this per day? so divide by number of dogs/person/day
+
+ #costs between van and cycle not distinguished here? assume 2x
+vehrent=sum(costG[11:12,5])/rateG[,2]
+vehrent=vehrent*c(1,1,2,1)
+
+ 
+#specialized costs (so exclude coolers here)
+#for example CVR kit...what is the per dog rate of this?? all dogs?
+CVRcost=costG[21,5]/20000+costG[25,5]/500+costG[8,5]/rateG[3,2] ##kit, human rabies treat,driver
+CPDDcost=costG[24,5]/2000
+OBcost=costG[24,5]/1000 #assume higher than dd/cp, but lower than 
+equip=c(CPDDcost,CPDDcost,CVRcost,OBcost) #really these are fixed costs and need a different method of incorporation probably equip+people+costvax
+
+bcost=costvax+numpeople+equip
+#the absolute largest item here is the per unit cost
+# of the OB at 3.00
+
+
+pvecd=1/pve
+pvecd=bcost*t(pvecd)
+```
+
+
+```{r}
+
+pvecdd=pvecd
+obj=c((as.matrix(pvecdd)))
+m <- 3
+n <- 4
+constr <- matrix (0 , n +m , n*m )
+for(i in 1:m){ 
+  for(j in 1:n){ 
+    constr[i, n*(i-1) + j] <- 1
+    constr[m+j, n*(i-1) + j] <- 1
+  }
+}
+# this array will ensure we cannot exceed the number of dogs in 
+# a category
+
+
+cover1=c(c(pve[1,1],pve[1,2],pve[1,3],pve[1,4],0,0,0,0,0,0,0,0)) #required coverage C
+cover2=c(c(0,0,0,0,pve[2,1],pve[2,2],pve[2,3],pve[2,4],0,0,0,0)) #required coverage SC
+cover3=c(c(0,0,0,0,0,0,0,0,pve[3,1],pve[3,2],pve[3,3],pve[3,4])) #required coverage NC
+
+
+
+constr=rbind(constr, cover1, cover2, cover3)
+rhs <- c(d[1], d[2], d[3],  rep(0.7*sum(d),4), 0.7*d[1],0.7*d[2],0.7*d[3])
+constr.dir <- c(rep(">=",3 ), rep("<=", 4),
+                rep(">=",3))
+
+
+
+prod.trans <- lp ("min", objective.in=obj, 
+                  constr, constr.dir, rhs)
+rm(soln)
+soln=(matrix(prod.trans$solution, nrow=4))
+
+
+pvex=soln*t(pve)
+solntab=(rbind(soln,colSums(pvex)/d ))
+solntab=rbind(solntab,d)
+colnames(solntab)=dogcats
+rownames(solntab)=c(vaxcats,"%vax", "dogs")
+solntab
+knitr::kable(pvecdd, digits=2, caption="Table: Vax costs * 1/efficacy: cost per unit unit successful vax")
+knitr::kable(solntab, digits=2, caption="Table: Optimal vaccine allocation strategy")
+campcost=soln*bcost
+
+
+#Calc needed person/days
+
+meths=solntab[1:4,]
+methunits=rowSums(meths)
+pdays=methunits/rateG[,2]
+
+#Calc needed persons (/by campaign days)
+# one month?
+
+staff=pdays/30
+tstaff=sum(staff)
+
+
+```
+Total cost of the campaign is then `r sum(campcost)`. This calculation gives total staff needed to deliver `r sum(meths)` vaccinations, as `r round(tstaff,0)` for 30 days.
+

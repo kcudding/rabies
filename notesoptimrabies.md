@@ -1,5 +1,5 @@
 ---
-title: "optimize rabies campaign: take 5 with costs from Wallace et al. 2019"
+title: "optimize rabies campaign: take 6 with costs from Gibson et al. 2020"
 author: "Kim Cuddington"
 date: "07/05/2022"
 output: 
@@ -351,11 +351,11 @@ knitr::kable(pmat, digits=2, caption="Table: Median and range of vaccine efficac
   <tr>
    <td> 
 
-|   |CP                   |DD                  |CVR                  |ORV               |
-|:--|:--------------------|:-------------------|:--------------------|:-----------------|
-|C  |0.9 ( 0.46 - 1 )     |0.91 ( 0.55 - 1 )   |0.1 ( 0.01 - 0.41 )  |0.1 ( 0 - 0.38 )  |
-|SC |0.77 ( 0.42 - 0.97 ) |0.78 ( 0.5 - 0.99 ) |0.89 ( 0.45 - 0.99 ) |0.91 ( 0.55 - 1 ) |
-|NC |0.11 ( 0 - 0.41 )    |0.1 ( 0 - 0.4 )     |0.77 ( 0.4 - 0.96 )  |0.92 ( 0.6 - 1 )  |
+|   |CP                   |DD                   |CVR                  |ORV                  |
+|:--|:--------------------|:--------------------|:--------------------|:--------------------|
+|C  |0.89 ( 0.56 - 1 )    |0.9 ( 0.62 - 0.99 )  |0.1 ( 0 - 0.5 )      |0.12 ( 0.01 - 0.45 ) |
+|SC |0.77 ( 0.38 - 0.96 ) |0.77 ( 0.42 - 0.96 ) |0.92 ( 0.56 - 1 )    |0.89 ( 0.47 - 0.99 ) |
+|NC |0.09 ( 0 - 0.39 )    |0.1 ( 0.01 - 0.45 )  |0.75 ( 0.41 - 0.93 ) |0.89 ( 0.36 - 0.99 ) |
 
  </td>
   </tr>
@@ -375,13 +375,13 @@ knitr::kable(omat, digits=2, caption="Table: Optimal vaccine allocation strategy
   <tr>
    <td> 
 
-|     |C                 |SC                            |NC                              |
-|:----|:-----------------|:-----------------------------|:-------------------------------|
-|CP   |0 ( 0 - 8400 )    |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
-|DD   |5880 ( 0 - 8400 ) |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
-|CVR  |0 ( 0 - 0 )       |5520 ( 0 - 7200 )             |6480 ( 6480 - 13080 )           |
-|ORV  |0 ( 0 - 0 )       |0 ( 0 - 3600 )                |3600 ( 0 - 3600 )               |
-|%vax |1 ( 0.7 - 1 )     |0.766666666666667 ( 0.7 - 1 ) |0.7 ( 0.7 - 0.908333333333333 ) |
+|     |C                             |SC                            |NC                              |
+|:----|:-----------------------------|:-----------------------------|:-------------------------------|
+|CP   |5880 ( 0 - 8400.00000000001 ) |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
+|DD   |0 ( 0 - 8400 )                |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
+|CVR  |0 ( 0 - 0 )                   |5520 ( 0 - 7200 )             |6480 ( 6480 - 13080 )           |
+|ORV  |0 ( 0 - 0 )                   |0 ( 0 - 3600 )                |3600 ( 0 - 3600 )               |
+|%vax |1 ( 0.7 - 1 )                 |0.766666666666667 ( 0.7 - 1 ) |0.7 ( 0.7 - 0.908333333333333 ) |
 
  </td>
   </tr>
@@ -463,7 +463,7 @@ colnames(omat)=dogcats
 rownames(omat)=c(vaxcats, "%vax")
 ```
 
-Our simulations provide a range of always confined dogs (6808 ( 0 - 25742 )), semi-confined(8401 ( 1734 - 25215 )), and never confined dogs (14707 ( 5685 - 28764 )), which produces  a range of vaccination outcomes for a fixed number of vaccines (injections = 2.04\times 10^{4} and baits = 3600), but overall, a standard strategy emerges for this level of uncertainty in the dog populations.
+Our simulations provide a range of always confined dogs (6256 ( 0 - 21597 )), semi-confined(8164 ( 1275 - 18860 )), and never confined dogs (14114 ( 6091 - 28985 )), which produces  a range of vaccination outcomes for a fixed number of vaccines (injections = 20400 and baits = 3600), but overall, a standard strategy emerges for this level of uncertainty in the dog populations.
 
 We could also simultaneously vary the uncertainty about the dog population and the vaccine delivery efficacy, but I'm not sure this is useful when we have a range of dog categories that is sometimes zero? We need a better way to perhaps plot/categorize these different scenarios
 
@@ -471,13 +471,13 @@ We could also simultaneously vary the uncertainty about the dog population and t
 
 Table: Table: Optimal vaccine allocation strategy for fixed number of vaccines (median, min - max)
 
-|     |C                 |SC                 |NC                 |
-|:----|:-----------------|:------------------|:------------------|
-|CP   |439 ( 0 - 13484 ) |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
-|DD   |0 ( 0 - 0 )       |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
-|CVR  |0 ( 0 - 0 )       |4078 ( 0 - 11695 ) |2460 ( 0 - 12046 ) |
-|ORV  |0 ( 0 - 0 )       |0 ( 0 - 0 )        |3600 ( 0 - 3600 )  |
-|%vax |1 ( 0 - 1 )       |0.79 ( 0 - 1 )     |0.7 ( 0 - 1 )      |
+|     |C                  |SC                 |NC                 |
+|:----|:------------------|:------------------|:------------------|
+|CP   |2414 ( 0 - 13009 ) |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
+|DD   |0 ( 0 - 0 )        |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
+|CVR  |0 ( 0 - 0 )        |5763 ( 0 - 10969 ) |5992 ( 0 - 13181 ) |
+|ORV  |0 ( 0 - 0 )        |0 ( 0 - 0 )        |3600 ( 0 - 3600 )  |
+|%vax |1 ( 0 - 1 )        |0.88 ( 0 - 1 )     |0.7 ( 0 - 1 )      |
 
 ## Find optimal solultion for expediture
 
@@ -614,7 +614,7 @@ Table: Table: Optimal vaccine allocation strategy
 campcost=soln*bcost
 ```
 
-This optimal solution has a total cost of $2.352\times 10^{5} assuming per unit costs of $10, 4, 120, 12 for CP, DD, CVR, and OB respectively
+This optimal solution has a total cost of $235200 assuming per unit costs of $10, 4, 120, 12 for CP, DD, CVR, and OB respectively
 
 
 
@@ -830,4 +830,252 @@ Table: Table: Optimal vaccine allocation strategy
 campcost=soln*bcost
 ```
 
-So again, solution goes with lowest cost items. If oral baits $.50 more expensive, should go with CVR 
+Total cost of the campaign is then 55427.6. So again, solution goes with lowest cost items. If oral baits $.50 more expensive, should go with CVR 
+
+## Personnel needed
+
+Given this allocation, how many staff would we need? We will assume that DD and OBH are teams of 2, CVR is a team of 5 plus driver. To start let's use the dogs/person/day from Wallace et al. (2019)
+
+
+```r
+#Calc needed person/days
+
+meths=solntab[1:4,]
+methunits=rowSums(meths)
+pdays=methunits/rate[,2]
+
+#Calc needed persons (/by campaign days)
+# one month?
+
+staff=pdays/30
+tstaff=sum(staff)
+```
+
+This calculation gives total staff needed to deliver 30000 vaccinations, as 22 for 30 days. Seems implausible?
+
+
+## Read in Gibson materials instead?
+
+
+
+```r
+# Gibson, A. D., Wallace, R. M., Rahman, A., Bharti, O. K., Isloor, S., Lohr, F., ... & Day, M. J. (2020). Reviewing solutions of scale for canine rabies elimination in India. Tropical medicine and infectious disease, 5(1), 47.
+
+# Gibson 2020 Overall staff rate (dogs/person/day) OBH-DD=41 CVR=14.6 DD=23.9
+# Scenarios for dog population size in Bangalore city were calculated based on best, mean and worse case scenarios for available dog-to-human ratios in Indian urban settings; Scenario A 83:1, (B) 50:1, (C) 23:1
+
+# there are separate spreadsheets for each of these SUpplementary materials 1 https://www.mdpi.com/2414-6366/5/1/47
+
+rm(cost)
+costG=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",
+sheet=4,rows=c(28:73),cols=c(1:7),
+startRow = 28)
+costG=costG[complete.cases(costG),]
+colnames(costG)[4:6]=c("low_unit_cost", "mean_unit_cost", "hi_unit_cost")
+costG=as.data.frame(costG)
+costG[,2:6]=apply(costG[,2:6], 2, function(x) as.numeric(x, na.rm=TRUE))
+
+knitr::kable(costG, digits=2, caption="Table: Vaccination costs Gibson et al. 2020")
+```
+
+
+
+Table: Table: Vaccination costs Gibson et al. 2020
+
+|   | Item                                      |    Units| Work.days| low_unit_cost| mean_unit_cost| hi_unit_cost|
+|:--|:------------------------------------------|--------:|---------:|-------------:|--------------:|------------:|
+|3  |Program manager                            |     1.00|        11|         12.00|          18.00|        24.00|
+|4  |Informational supervisor                   |     1.00|        11|         12.00|          18.00|        24.00|
+|5  |Vaccination supervisor (1 per 25,000 dogs) |     4.07|        11|          8.00|          15.00|        20.00|
+|6  |Central Point technician                   |     0.00|        11|          6.00|          12.00|        14.00|
+|7  |Door to Door technician                    |   210.53|        11|          7.00|          13.00|        16.00|
+|8  |Capture/Vax/Release technician             |     0.00|        11|          7.00|          11.00|        13.00|
+|9  |ORV technician                             |     0.00|        11|          7.00|          13.00|        16.00|
+|10 |Driver                                     |     8.13|        11|          5.00|           8.00|        10.00|
+|11 |Other Personnel                            |     2.00|        11|          6.00|           8.00|        10.00|
+|13 |Government vehicle (including gasoline)    |     0.00|        11|         10.00|          15.00|        20.00|
+|14 |Other vehicle (ie rental, purchase, other) |     8.13|        11|         10.00|          15.00|        20.00|
+|15 |Gasoline                                   |     8.13|        11|         10.00|          15.00|        20.00|
+|16 |Maintenance vehicle                        |     3.00|        11|          3.00|           5.00|         8.00|
+|17 |Public transport                           |     0.00|        11|          1.30|           1.60|         1.90|
+|19 |Media (e.g. posters)                       | 10000.00|        NA|          0.48|           0.60|         0.72|
+|20 |Air time (radio, car with speakers, etc.)  |     4.07|        10|         30.00|          35.00|        40.00|
+|21 |Other costs                                |     2.00|        NA|       2500.00|        5000.00|      7500.00|
+|23 |Tables                                     |     0.00|        NA|         10.00|          20.00|        40.00|
+|24 |Coolers                                    |   105.26|        NA|          6.00|          10.00|        15.00|
+|25 |Dog handling (e.g., muzzles)               |     0.00|        NA|         20.00|          40.00|        60.00|
+|26 |CVR Kit                                    |     0.00|        NA|         40.00|          60.00|        80.00|
+|27 |First-aid                                  |   105.26|        NA|          5.00|           7.00|        10.00|
+|28 |Central Vaccine Storage                    |     1.00|       365|         20.00|          30.00|        40.00|
+|29 |CP/DD Bite PEP (1 in 2,000)                |       NA|        10|         60.00|         100.00|       140.00|
+|30 |CVR Bite Booster PEP (1 in 500)            |       NA|         0|         60.00|         100.00|       140.00|
+|31 |Other equipment / supplies                 |     1.00|        NA|       2000.00|        2500.00|      3000.00|
+|35 |Vaccines (Parenteral)                      | 20000.00|        NA|          0.30|           0.40|         0.50|
+|36 |Vaccines (Oral)                            | 60000.00|        NA|          1.50|           2.00|         2.50|
+|37 |Syringes and needles                       | 20000.00|        NA|          0.11|           0.13|         0.15|
+|38 |Vaccination certificates                   | 80000.00|        NA|          0.03|           0.05|         0.08|
+|39 |Dog marking                                | 80000.00|        NA|          0.02|           0.03|         0.04|
+
+```r
+rateG=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",colNames=FALSE,
+sheet=4,rows=c(5:8),cols=c(1:3))
+#these are NOT right on the Gibson sheet
+
+
+#use capacity from scenario
+rateG=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",colNames=FALSE,
+sheet=6,rows=c(33:36),cols=c(1:2))
+```
+
+
+
+```r
+#What is our minimum per dose cost for each method?
+
+#costvax=c(1,1, 1, 3 )
+
+injvaxcost=sum(costG[c(27, 29:30), 5])
+obcost=sum(costG[c(28,30), 5]) #median of range quoted by williams in another paper is 3 (REF)? at this value not cost effective
+
+costvax=c(injvaxcost, injvaxcost,injvaxcost,obcost)
+
+#the use rate of mean salary
+# and guestimate of the number of vaccination staff required per vax
+# perhaps a lower number per CVR? certainly exclude the driver
+# then divide by per person day vax rate
+numpeople=c(1,2,5,2)*mean(costG[4:7, 5])/rateG[,2]
+
+#assume motorcycle/moped for DD and OBH
+#assume van for VCR
+
+
+#not sure what the government vehicle does? or is how different?
+
+# and this per day? so divide by number of dogs/person/day
+
+ #costs between van and cycle not distinguished here? assume 2x
+vehrent=sum(costG[11:12,5])/rateG[,2]
+vehrent=vehrent*c(1,1,2,1)
+
+ 
+#specialized costs (so exclude coolers here)
+#for example CVR kit...what is the per dog rate of this?? all dogs?
+CVRcost=costG[21,5]/20000+costG[25,5]/500+costG[8,5]/rateG[3,2] ##kit, human rabies treat,driver
+CPDDcost=costG[24,5]/2000
+OBcost=costG[24,5]/1000 #assume higher than dd/cp, but lower than 
+equip=c(CPDDcost,CPDDcost,CVRcost,OBcost) #really these are fixed costs and need a different method of incorporation probably equip+people+costvax
+
+bcost=costvax+numpeople+equip
+#the absolute largest item here is the per unit cost
+# of the OB at 3.00
+
+
+pvecd=1/pve
+pvecd=bcost*t(pvecd)
+```
+
+
+
+```r
+pvecdd=pvecd
+obj=c((as.matrix(pvecdd)))
+m <- 3
+n <- 4
+constr <- matrix (0 , n +m , n*m )
+for(i in 1:m){ 
+  for(j in 1:n){ 
+    constr[i, n*(i-1) + j] <- 1
+    constr[m+j, n*(i-1) + j] <- 1
+  }
+}
+# this array will ensure we cannot exceed the number of dogs in 
+# a category
+
+
+cover1=c(c(pve[1,1],pve[1,2],pve[1,3],pve[1,4],0,0,0,0,0,0,0,0)) #required coverage C
+cover2=c(c(0,0,0,0,pve[2,1],pve[2,2],pve[2,3],pve[2,4],0,0,0,0)) #required coverage SC
+cover3=c(c(0,0,0,0,0,0,0,0,pve[3,1],pve[3,2],pve[3,3],pve[3,4])) #required coverage NC
+
+
+
+constr=rbind(constr, cover1, cover2, cover3)
+rhs <- c(d[1], d[2], d[3],  rep(0.7*sum(d),4), 0.7*d[1],0.7*d[2],0.7*d[3])
+constr.dir <- c(rep(">=",3 ), rep("<=", 4),
+                rep(">=",3))
+
+
+
+prod.trans <- lp ("min", objective.in=obj, 
+                  constr, constr.dir, rhs)
+rm(soln)
+soln=(matrix(prod.trans$solution, nrow=4))
+
+
+pvex=soln*t(pve)
+solntab=(rbind(soln,colSums(pvex)/d ))
+solntab=rbind(solntab,d)
+colnames(solntab)=dogcats
+rownames(solntab)=c(vaxcats,"%vax", "dogs")
+solntab
+```
+
+```
+           C     SC       NC
+CP   8400.00 7200.0     0.00
+DD      0.00    0.0     0.00
+CVR     0.00    0.0     0.00
+ORV     0.00    0.0 14400.00
+%vax    0.95    0.8     0.95
+dogs 8400.00 7200.0 14400.00
+```
+
+```r
+knitr::kable(pvecdd, digits=2, caption="Table: Vax costs * 1/efficacy: cost per unit unit successful vax")
+```
+
+
+
+Table: Table: Vax costs * 1/efficacy: cost per unit unit successful vax
+
+|    |     C|   SC|    NC|
+|:---|-----:|----:|-----:|
+|CP  |  1.09| 1.30| 20.79|
+|DD  |  1.52| 1.81| 28.95|
+|CVR | 61.85| 3.26|  3.87|
+|ORV | 52.80| 2.78|  2.78|
+
+```r
+knitr::kable(solntab, digits=2, caption="Table: Optimal vaccine allocation strategy")
+```
+
+
+
+Table: Table: Optimal vaccine allocation strategy
+
+|     |       C|     SC|       NC|
+|:----|-------:|------:|--------:|
+|CP   | 8400.00| 7200.0|     0.00|
+|DD   |    0.00|    0.0|     0.00|
+|CVR  |    0.00|    0.0|     0.00|
+|ORV  |    0.00|    0.0| 14400.00|
+|%vax |    0.95|    0.8|     0.95|
+|dogs | 8400.00| 7200.0| 14400.00|
+
+```r
+campcost=soln*bcost
+
+
+#Calc needed person/days
+
+meths=solntab[1:4,]
+methunits=rowSums(meths)
+pdays=methunits/rateG[,2]
+
+#Calc needed persons (/by campaign days)
+# one month?
+
+staff=pdays/30
+tstaff=sum(staff)
+```
+Total cost of the campaign is then 54229.6. This calculation gives total staff needed to deliver 30000 vaccinations, as 27 for 30 days.
+
