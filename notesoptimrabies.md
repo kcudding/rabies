@@ -380,11 +380,11 @@ knitr::kable(pmat, digits=2, caption="Table: Median and range of vaccine efficac
   <tr>
    <td> 
 
-|   |CP                   |DD                  |CVR                  |ORV               |
-|:--|:--------------------|:-------------------|:--------------------|:-----------------|
-|C  |0.9 ( 0.42 - 1 )     |0.89 ( 0.41 - 1 )   |0.1 ( 0 - 0.59 )     |0.11 ( 0 - 0.55 ) |
-|SC |0.76 ( 0.28 - 0.97 ) |0.76 ( 0.3 - 0.98 ) |0.89 ( 0.48 - 1 )    |0.9 ( 0.43 - 1 )  |
-|NC |0.11 ( 0 - 0.69 )    |0.1 ( 0 - 0.54 )    |0.76 ( 0.33 - 0.98 ) |0.89 ( 0.39 - 1 ) |
+|   |CP                   |DD                   |CVR                  |ORV               |
+|:--|:--------------------|:--------------------|:--------------------|:-----------------|
+|C  |0.9 ( 0.38 - 1 )     |0.9 ( 0.39 - 1 )     |0.1 ( 0 - 0.61 )     |0.1 ( 0 - 0.47 )  |
+|SC |0.76 ( 0.32 - 0.99 ) |0.77 ( 0.25 - 0.99 ) |0.9 ( 0.44 - 1 )     |0.89 ( 0.49 - 1 ) |
+|NC |0.1 ( 0 - 0.56 )     |0.1 ( 0 - 0.56 )     |0.77 ( 0.33 - 0.99 ) |0.89 ( 0.43 - 1 ) |
 
  </td>
   </tr>
@@ -410,7 +410,7 @@ knitr::kable(omat, digits=2, caption="Table: Optimal vaccine allocation strategy
 |DD   |0 ( 0 - 8400.00000000001 )    |0 ( 0 - 7200 )                |0 ( 0 - 0 )                       |
 |CVR  |0 ( 0 - 0 )                   |5520 ( 0 - 7200 )             |6480 ( 6479.99999999999 - 13080 ) |
 |ORV  |0 ( 0 - 0 )                   |0 ( 0 - 3600 )                |3600 ( 0 - 3600 )                 |
-|%vax |1 ( 0.7 - 1 )                 |0.766666666666667 ( 0.7 - 1 ) |0.7 ( 0.7 - 0.908333333333334 )   |
+|%vax |1 ( 0.699999999999999 - 1 )   |0.766666666666667 ( 0.7 - 1 ) |0.7 ( 0.7 - 0.908333333333334 )   |
 
  </td>
   </tr>
@@ -519,11 +519,11 @@ $breaks
 [13] 30000 32500 35000
 
 $counts
- [1] 23 17 11 15 13  6  6  5  3  0  1  0  0  0
+ [1] 26 14 17  7 16  9  8  3  0  0  0  0  0  0
 
 $density
- [1] 0.000092 0.000068 0.000044 0.000060 0.000052 0.000024 0.000024 0.000020
- [9] 0.000012 0.000000 0.000004 0.000000 0.000000 0.000000
+ [1] 0.000104 0.000056 0.000068 0.000028 0.000064 0.000036 0.000032 0.000012
+ [9] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
 
 $mids
  [1]  1250  3750  6250  8750 11250 13750 16250 18750 21250 23750 26250 28750
@@ -544,10 +544,10 @@ $breaks
 [13] 30000 32500 35000
 
 $counts
- [1]  2 17 22 23 18 10  5  2  1  0  0  0  0  0
+ [1]  4 14 23 21 22 11  3  1  1  0  0  0  0  0
 
 $density
- [1] 0.000008 0.000068 0.000088 0.000092 0.000072 0.000040 0.000020 0.000008
+ [1] 0.000016 0.000056 0.000092 0.000084 0.000088 0.000044 0.000012 0.000004
  [9] 0.000004 0.000000 0.000000 0.000000 0.000000 0.000000
 
 $mids
@@ -569,11 +569,11 @@ $breaks
 [13] 30000 32500 35000
 
 $counts
- [1]  0  1  9 10 17 21 21  8  8  2  2  1  0  0
+ [1]  0  1  6 11 20 18 21  9  7  6  1  0  0  0
 
 $density
- [1] 0.000000 0.000004 0.000036 0.000040 0.000068 0.000084 0.000084 0.000032
- [9] 0.000032 0.000008 0.000008 0.000004 0.000000 0.000000
+ [1] 0.000000 0.000004 0.000024 0.000044 0.000080 0.000072 0.000084 0.000036
+ [9] 0.000028 0.000024 0.000004 0.000000 0.000000 0.000000
 
 $mids
  [1]  1250  3750  6250  8750 11250 13750 16250 18750 21250 23750 26250 28750
@@ -589,7 +589,7 @@ attr(,"class")
 [1] "histogram"
 ```
 
-Our simulations provide a range of always confined dogs (7156 ( 0 - 25147 )), semi-confined(8274 ( 1712 - 20199 )), and never confined dogs (13692 ( 4736 - 28420 )), which produces  a range of vaccination outcomes for a fixed number of vaccines (injections = 20400 and baits = 3600), but overall, a standard strategy emerges for this level of uncertainty in the dog populations.
+Our simulations provide a range of always confined dogs (6570 ( 0 - 19799 )), semi-confined(8992 ( 1564 - 22000 )), and never confined dogs (14011 ( 3415 - 26086 )), which produces  a range of vaccination outcomes for a fixed number of vaccines (injections = 20400 and baits = 3600), but overall, a standard strategy emerges for this level of uncertainty in the dog populations.
 
 We could also simultaneously vary the uncertainty about the dog population and the vaccine delivery efficacy, but I'm not sure this is useful when we have a range of dog categories that is sometimes zero? We need a better way to perhaps plot/categorize these different scenarios
 
@@ -597,13 +597,13 @@ We could also simultaneously vary the uncertainty about the dog population and t
 
 Table: Table: Optimal vaccine allocation strategy for fixed number of vaccines (median, min - max)
 
-|     |C                 |SC                 |NC                 |
-|:----|:-----------------|:------------------|:------------------|
-|CP   |748 ( 0 - 14754 ) |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
-|DD   |0 ( 0 - 0 )       |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
-|CVR  |0 ( 0 - 0 )       |4478 ( 0 - 13810 ) |6771 ( 0 - 13452 ) |
-|ORV  |0 ( 0 - 0 )       |0 ( 0 - 0 )        |3600 ( 0 - 3600 )  |
-|%vax |0.91 ( 0 - 1 )    |0.7 ( 0 - 1 )      |0.7 ( 0 - 1 )      |
+|     |C                 |SC                 |NC                |
+|:----|:-----------------|:------------------|:-----------------|
+|CP   |965 ( 0 - 12187 ) |0 ( 0 - 0 )        |0 ( 0 - 0 )       |
+|DD   |0 ( 0 - 0 )       |0 ( 0 - 0 )        |0 ( 0 - 0 )       |
+|CVR  |0 ( 0 - 0 )       |7766 ( 0 - 13595 ) |6250 ( 0 - 8936 ) |
+|ORV  |0 ( 0 - 0 )       |0 ( 0 - 0 )        |3600 ( 0 - 3600 ) |
+|%vax |1 ( 0 - 1 )       |0.74 ( 0 - 1 )     |0.7 ( 0 - 1 )     |
 
 ## Find optimal solultion for expediture
 
