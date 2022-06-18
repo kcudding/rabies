@@ -5,6 +5,9 @@ date: "07/05/2022"
 output: 
   html_document: 
     keep_md: yes
+    fig_caption: yes
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -275,10 +278,10 @@ return(y)
 
 randvax<-function(pve,d, Dp, C, NC) {
 
-covmat=matrix(NA, nrow=100, ncol=3)
+covmat=matrix(NA, nrow=1000, ncol=3)
 mclist=list()
 plist=list()
-for (i in 1:100){
+for (i in 1:1000){
   p=apply(pve, c(1,2), rbpve)
   plist[[i]]=p
   obj=c(t(as.matrix(p)))*100
@@ -309,8 +312,8 @@ tabprep<-function(flist) {
 mclist=multilist[1]
 plist=multilist[3]
 #  Make a 3D array from list of matrices
-arr <- array( unlist(mclist) , c(4,3,100) )
-parr<-array( unlist(plist) , c(3,4,100) )
+arr <- array( unlist(mclist) , c(4,3,1000) )
+parr<-array( unlist(plist) , c(3,4,1000) )
 
 #  Get summaries of third dimension
 mdarr=apply( arr , 1:2 , median)
@@ -336,6 +339,32 @@ rownames(omat)=c(vaxcats, "%vax")
 return(list(pmat, omat))
 
 }
+```
+
+
+
+```
+     [,1]        [,2]        [,3]        [,4]       
+[1,] histogram,6 histogram,6 histogram,6 histogram,6
+[2,] histogram,6 histogram,6 histogram,6 histogram,6
+[3,] histogram,6 histogram,6 histogram,6 histogram,6
+```
+
+![](notesoptimrabies_files/figure-html/vaccine efficacy-1.png)<!-- -->
+
+```
+     [,1]        [,2]        [,3]       
+[1,] histogram,6 histogram,6 histogram,6
+[2,] histogram,6 histogram,6 histogram,6
+[3,] histogram,6 histogram,6 histogram,6
+[4,] histogram,6 histogram,6 histogram,6
+```
+
+![](notesoptimrabies_files/figure-html/vaccine efficacy-2.png)<!-- -->
+
+
+
+```r
 tablist=tabprep(multilist)
 pmat=tablist[1]
 
@@ -351,11 +380,11 @@ knitr::kable(pmat, digits=2, caption="Table: Median and range of vaccine efficac
   <tr>
    <td> 
 
-|   |CP                   |DD                   |CVR                  |ORV                  |
-|:--|:--------------------|:--------------------|:--------------------|:--------------------|
-|C  |0.89 ( 0.56 - 1 )    |0.9 ( 0.62 - 0.99 )  |0.1 ( 0 - 0.5 )      |0.12 ( 0.01 - 0.45 ) |
-|SC |0.77 ( 0.38 - 0.96 ) |0.77 ( 0.42 - 0.96 ) |0.92 ( 0.56 - 1 )    |0.89 ( 0.47 - 0.99 ) |
-|NC |0.09 ( 0 - 0.39 )    |0.1 ( 0.01 - 0.45 )  |0.75 ( 0.41 - 0.93 ) |0.89 ( 0.36 - 0.99 ) |
+|   |CP                   |DD                  |CVR                  |ORV               |
+|:--|:--------------------|:-------------------|:--------------------|:-----------------|
+|C  |0.9 ( 0.42 - 1 )     |0.89 ( 0.41 - 1 )   |0.1 ( 0 - 0.59 )     |0.11 ( 0 - 0.55 ) |
+|SC |0.76 ( 0.28 - 0.97 ) |0.76 ( 0.3 - 0.98 ) |0.89 ( 0.48 - 1 )    |0.9 ( 0.43 - 1 )  |
+|NC |0.11 ( 0 - 0.69 )    |0.1 ( 0 - 0.54 )    |0.76 ( 0.33 - 0.98 ) |0.89 ( 0.39 - 1 ) |
 
  </td>
   </tr>
@@ -375,18 +404,19 @@ knitr::kable(omat, digits=2, caption="Table: Optimal vaccine allocation strategy
   <tr>
    <td> 
 
-|     |C                             |SC                            |NC                              |
-|:----|:-----------------------------|:-----------------------------|:-------------------------------|
-|CP   |5880 ( 0 - 8400.00000000001 ) |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
-|DD   |0 ( 0 - 8400 )                |0 ( 0 - 7200 )                |0 ( 0 - 0 )                     |
-|CVR  |0 ( 0 - 0 )                   |5520 ( 0 - 7200 )             |6480 ( 6480 - 13080 )           |
-|ORV  |0 ( 0 - 0 )                   |0 ( 0 - 3600 )                |3600 ( 0 - 3600 )               |
-|%vax |1 ( 0.7 - 1 )                 |0.766666666666667 ( 0.7 - 1 ) |0.7 ( 0.7 - 0.908333333333333 ) |
+|     |C                             |SC                            |NC                                |
+|:----|:-----------------------------|:-----------------------------|:---------------------------------|
+|CP   |5880 ( 0 - 8400.00000000001 ) |0 ( 0 - 7200 )                |0 ( 0 - 0 )                       |
+|DD   |0 ( 0 - 8400.00000000001 )    |0 ( 0 - 7200 )                |0 ( 0 - 0 )                       |
+|CVR  |0 ( 0 - 0 )                   |5520 ( 0 - 7200 )             |6480 ( 6479.99999999999 - 13080 ) |
+|ORV  |0 ( 0 - 0 )                   |0 ( 0 - 3600 )                |3600 ( 0 - 3600 )                 |
+|%vax |1 ( 0.7 - 1 )                 |0.766666666666667 ( 0.7 - 1 ) |0.7 ( 0.7 - 0.908333333333334 )   |
 
  </td>
   </tr>
 </tbody>
 </table>
+
 
 It's not clear to me that the best way to portray the range of outcomes....
 
@@ -463,7 +493,103 @@ colnames(omat)=dogcats
 rownames(omat)=c(vaxcats, "%vax")
 ```
 
-Our simulations provide a range of always confined dogs (6256 ( 0 - 21597 )), semi-confined(8164 ( 1275 - 18860 )), and never confined dogs (14114 ( 6091 - 28985 )), which produces  a range of vaccination outcomes for a fixed number of vaccines (injections = 20400 and baits = 3600), but overall, a standard strategy emerges for this level of uncertainty in the dog populations.
+
+
+```r
+par(mfrow=c(1,3),mar=c(7,4,2,2), bty="o")  # ask for 5x5 array of plots, by row
+#tapply(x.df$x, x.df$group, hist)
+colnames(pclist)=dogcats
+
+myfun=function(x, data) {
+  hist(data[,x], main = colnames(data)[x], xlab="dogs",
+       breaks=seq(from=0, to=35000, by=2500))
+    
+  
+}
+
+lapply(1:ncol(pclist), myfun, data = pclist)
+```
+
+![](notesoptimrabies_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+```
+[[1]]
+$breaks
+ [1]     0  2500  5000  7500 10000 12500 15000 17500 20000 22500 25000 27500
+[13] 30000 32500 35000
+
+$counts
+ [1] 23 17 11 15 13  6  6  5  3  0  1  0  0  0
+
+$density
+ [1] 0.000092 0.000068 0.000044 0.000060 0.000052 0.000024 0.000024 0.000020
+ [9] 0.000012 0.000000 0.000004 0.000000 0.000000 0.000000
+
+$mids
+ [1]  1250  3750  6250  8750 11250 13750 16250 18750 21250 23750 26250 28750
+[13] 31250 33750
+
+$xname
+[1] "data[, x]"
+
+$equidist
+[1] TRUE
+
+attr(,"class")
+[1] "histogram"
+
+[[2]]
+$breaks
+ [1]     0  2500  5000  7500 10000 12500 15000 17500 20000 22500 25000 27500
+[13] 30000 32500 35000
+
+$counts
+ [1]  2 17 22 23 18 10  5  2  1  0  0  0  0  0
+
+$density
+ [1] 0.000008 0.000068 0.000088 0.000092 0.000072 0.000040 0.000020 0.000008
+ [9] 0.000004 0.000000 0.000000 0.000000 0.000000 0.000000
+
+$mids
+ [1]  1250  3750  6250  8750 11250 13750 16250 18750 21250 23750 26250 28750
+[13] 31250 33750
+
+$xname
+[1] "data[, x]"
+
+$equidist
+[1] TRUE
+
+attr(,"class")
+[1] "histogram"
+
+[[3]]
+$breaks
+ [1]     0  2500  5000  7500 10000 12500 15000 17500 20000 22500 25000 27500
+[13] 30000 32500 35000
+
+$counts
+ [1]  0  1  9 10 17 21 21  8  8  2  2  1  0  0
+
+$density
+ [1] 0.000000 0.000004 0.000036 0.000040 0.000068 0.000084 0.000084 0.000032
+ [9] 0.000032 0.000008 0.000008 0.000004 0.000000 0.000000
+
+$mids
+ [1]  1250  3750  6250  8750 11250 13750 16250 18750 21250 23750 26250 28750
+[13] 31250 33750
+
+$xname
+[1] "data[, x]"
+
+$equidist
+[1] TRUE
+
+attr(,"class")
+[1] "histogram"
+```
+
+Our simulations provide a range of always confined dogs (7156 ( 0 - 25147 )), semi-confined(8274 ( 1712 - 20199 )), and never confined dogs (13692 ( 4736 - 28420 )), which produces  a range of vaccination outcomes for a fixed number of vaccines (injections = 20400 and baits = 3600), but overall, a standard strategy emerges for this level of uncertainty in the dog populations.
 
 We could also simultaneously vary the uncertainty about the dog population and the vaccine delivery efficacy, but I'm not sure this is useful when we have a range of dog categories that is sometimes zero? We need a better way to perhaps plot/categorize these different scenarios
 
@@ -471,13 +597,13 @@ We could also simultaneously vary the uncertainty about the dog population and t
 
 Table: Table: Optimal vaccine allocation strategy for fixed number of vaccines (median, min - max)
 
-|     |C                  |SC                 |NC                 |
-|:----|:------------------|:------------------|:------------------|
-|CP   |2414 ( 0 - 13009 ) |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
-|DD   |0 ( 0 - 0 )        |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
-|CVR  |0 ( 0 - 0 )        |5763 ( 0 - 10969 ) |5992 ( 0 - 13181 ) |
-|ORV  |0 ( 0 - 0 )        |0 ( 0 - 0 )        |3600 ( 0 - 3600 )  |
-|%vax |1 ( 0 - 1 )        |0.88 ( 0 - 1 )     |0.7 ( 0 - 1 )      |
+|     |C                 |SC                 |NC                 |
+|:----|:-----------------|:------------------|:------------------|
+|CP   |748 ( 0 - 14754 ) |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
+|DD   |0 ( 0 - 0 )       |0 ( 0 - 0 )        |0 ( 0 - 0 )        |
+|CVR  |0 ( 0 - 0 )       |4478 ( 0 - 13810 ) |6771 ( 0 - 13452 ) |
+|ORV  |0 ( 0 - 0 )       |0 ( 0 - 0 )        |3600 ( 0 - 3600 )  |
+|%vax |0.91 ( 0 - 1 )    |0.7 ( 0 - 1 )      |0.7 ( 0 - 1 )      |
 
 ## Find optimal solultion for expediture
 
