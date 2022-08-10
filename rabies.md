@@ -23,9 +23,9 @@ css: quantbiotalk.css
 
 ## Plan 
   + Why rabies?
-  + Oral bait for vaccination
+  + Oral baits for vaccination
   + Dog populations in India
-  + How can we optimize the rabies vaccinaiton of dogs in India
+  + How can we optimize the rabies vaccination of dogs in India
     - simple deterministic approach: linear programming
     
 # Why Rabies?
@@ -37,78 +37,84 @@ css: quantbiotalk.css
 
 - in the saliva of infected mammals and can be spread by: (1) bites that break the skin,  (2) getting saliva from an infected animal in an open cut, sore, or other wound, and (3) getting saliva from an infected animal in the mouth, nose, or eyes 
 
-- Over 99% of cases of human rabies are caused by an infected dog bite ([WHO Rabies Factsheet](https://www.who.int/news-room/fact-sheets/detail/rabies)). There are no documented events of human to human transmission other than in the case of organ transplants. 
+- 99% of cases of human rabies are caused by an infected dog bite ([WHO Rabies Factsheet](https://www.who.int/news-room/fact-sheets/detail/rabies)). There are no documented events of human to human transmission other than in the case of organ transplants. 
 
 
-## Rabies
+## Why rabies?
 
-- the highest mortality rate of all known infectious agents: almost all individuals who progress to clinical symptoms will die (Radhakrishnan et al 2020). In humans, death usually occurs within 7 days of clinical symptoms. 
-- not a reportable disease in most countries, and almost certainly under-reported, especially given that incubation can take from 1-3 months following an encounter with a rabid animal.
-- the paralytic form of the disease is not widely recognized, and so is frequently misdiagnosed (often as malaria). 
+- the highest mortality rate of all known infectious agents: almost all individuals who progress to clinical symptoms will die within 7 days (Radhakrishnan et al 2020)
+- not a reportable disease in most countries, and almost certainly under-reported, especially given that incubation can take from 1-3 months following an encounter with a rabid animal
+- the paralytic form of the disease is not widely recognized, and so is frequently misdiagnosed (often as malaria) 
 - estimates in databases such as global burden of disease are almost certainly too low
 <br>
 <font size="7"><span style="color:red">$\rightarrow$</span></font> probably [59,000 human deaths each year](https://www.cdc.gov/rabies/location/world/index.html).  
  
-## Economic burden of rabies
+##  Burden of rabies
 
- - the human welfare impact of this disease is primarily related to the effects of lives lost. [Hampson et al. (2015)](https://doi.org/10.1371/journal.pntd.0003709) estimated the global welfare impact of human rabies transmitted by dogs at 3.7 million disability-adjusted human life years (DALYs) lost every year.
-- the global economic burden of dog-mediated rabies is estimated at US$ 8.6 billion per year ([WHO Rabies Factsheet](https://www.who.int/news-room/fact-sheets/detail/rabies)), although  [Anderson and Shwiff (2015)](https://doi.org/10.1111/tbed.12168) estimated the global economic burden of canine rabies at US\$ 124.2 billion annually, using a different accounting for the losses due to premature death
-- under this first accounting, that 75% of these economic losses are due to premature death and costs associated with seeking treatment [Hampson et al.(2015](https://doi.org/10.1371/journal.pntd.0003709))
-- post-exposure treatment is expensive, particularly for the average victim in developing countries (typically young and living in a rural area), and must be employed unless there is certainty that the dog that bit the patient is negative for rabies
+ - [Hampson et al. (2015)](https://doi.org/10.1371/journal.pntd.0003709) estimated the global welfare impact of human rabies at 3.7 million disability-adjusted human life years (DALYs) lost every year
+- the global economic burden of dog-mediated rabies is estimated at US$ 8.6 billion per year ([WHO Rabies Factsheet](https://www.who.int/news-room/fact-sheets/detail/rabies)), 
+- 75% of these economic losses are due to premature death and costs associated with seeking treatment [Hampson et al.(2015](https://doi.org/10.1371/journal.pntd.0003709))
+- average victim itypically young and living in a rural area 
+- post-exposure treatment is expensive, and must be employed unless there is certainty that the dog that bit the patient is negative for rabies
 -  83% of the total rabies control costs in both Asia and Africa is put towards post exposure treatment ([Knobel et al. 2005](https://www.scielosp.org/article/ssm/content/raw/?resource_ssm_path=/media/assets/bwho/v83n5/v83n5a12.pdf)), even though, because of costs, a portion of those treated do not finish the course of post-exposure vaccinations. 
 
-## Why Rabies now?
+## Why rabies now?
 
-- The WHO, FAO (Food and Agriculture Organization) and OIE (World Organization for Animal Health), have prioritized rabies as a model disease for a One Health approach. 
-- One Health refers to the collaboration between different disciplines and sectors to recognize the connection between humans, animals, and the environment, and the necessity for integrated health interventions (learn more in this short course offered by WHO). 
-- In addition, these agencies have launched the ‘United Against Rabies Forum’ which advocates and prioritizes investments in rabies control, and coordinates the global rabies-elimination efforts to achieve zero human deaths from dog-mediated rabies by 2030 ([WHO, FAO, & OIE 2018](https://apps.who.int/iris/handle/10665/272756)). 
+- the WHO, FAO (Food and Agriculture Organization) and OIE (World Organization for Animal Health), have prioritized rabies as a model disease for a One Health approach. 
+- one Health refers to the collaboration between different disciplines and sectors to recognize the connection between humans, animals, and the environment, and the necessity for integrated health interventions 
+- these agencies have launched the ‘United Against Rabies Forum’ which advocates and prioritizes investments in rabies control, and coordinates the global rabies-elimination efforts to achieve zero human deaths from dog-mediated rabies by 2030 ([WHO, FAO, & OIE 2018](https://apps.who.int/iris/handle/10665/272756)). 
 
 
 ## Vaccination of dogs
-- The WHO suggests that vaccinating dogs is the most cost-effective strategy for preventing rabies in people, and reduces both human deaths and the need for post-exposure treatment ([WHO Rabies Factsheet](https://www.who.int/news-room/fact-sheets/detail/rabies)). 
+- the WHO suggests that vaccinating dogs is the most cost-effective strategy for preventing rabies in people, and reduces both human deaths and the need for post-exposure treatment ([WHO Rabies Factsheet](https://www.who.int/news-room/fact-sheets/detail/rabies)). 
+ - almost all human deaths occur in Asia and Africa, where there are free-roaming dog populations.
+ - investment in dog vaccination accounts for less than 1.5% of the global economic burden of the disease, with considerably smaller investments for Asian and African countries ([Hampson et al. 2015](https://doi.org/10.1371/journal.pntd.0003709)). 
 
 - Mission Rabies, a charitable organization that vaccinates dogs in various countries, estimates that vaccinating a person against rabies can cost up to 50 times more than vaccinating a dog ([Mission Rabies Blog 2021](http://www.missionrabies.com/blog/malawi-almost-15000-vaccinations-and-counting)).
 
 
 
 ## Rabies in India
+-India probably accounts for 36% of rabies deaths, or 18,000 - 20,000 per year ([WHO Rabies in India](https://www.who.int/india/health-topics/rabies)).
 
+
+
+<img src="Indianews.png" width="80%" style="display: block; margin: auto;" />
 <div style="float: right; width: 100%;">
-
-<img src="Indianews.png" width="100%" style="display: block; margin: auto 0 auto auto;" />
-
 </div>
 
-## Dog vaccination to counteract rabies in India
- - Almost all human deaths occur in Asia and Africa, where there are free-roaming dog populations.
- - investment in dog vaccination accounts for less than 1.5% of the global economic burden of the disease, with considerably smaller investments for Asian and African countries ([Hampson et al. 2015](https://doi.org/10.1371/journal.pntd.0003709)). 
--India probably accounts for 36% of rabies deaths, or 18,000 - 20,000 per year ([WHO Rabies in India](https://www.who.int/india/health-topics/rabies)).
+## Dog vaccination methods
+- in countries like India, where there are many free-roaming dogs that may or may not be owned, various vaccination strategies may be employed
+- central  point vaccination is where dog owners bring their pets to a central location such as a veterinarian office, or a community clinic during a vaccination blitz
+- door-to-door are strategies are where teams move from house-to-house to vaccinate dogs that can be handled by their owners, but which were not brought to a central point clinic 
+- these two strategies have only been successful at large scale where most dogs are responsibly owned (e.g., Latin America; [Vigilato et al. 2013](https://doi.org/10.3201/eid1904.121482))
+- for animals that cannot be easily handled, catch-vaccinate-release entails a team of people capturing the animal in a net, injecting the vaccine and then releasing
 
 ## Oral baits for vaccination
 
 <div style="float: left; width: 50%;">
-- Vaccines are perhaps most frequently delivered via injection; however, for several infectious diseases, orally administered vaccines are available. 
+- vaccines are perhaps most frequently delivered via injection; however, for several infectious diseases, orally administered vaccines are available. 
 - oral vaccine baits contain or are coated with attractive substances that the target animal is likely to ingest, along with an oral vaccine. 
-
+- baits may be as simple as meat or egg products containing the vaccine, but may also be packaged for easier deployment and shelf-life. 
 <br/><br/>
 </div>
 
 <div style="float: right; width: 45%;">
 <img src="bait.jpg" width="100%" style="display: block; margin: auto;" />
-</break>
-</break>
+
 </div>
 
-+ Baits may be as simple as meat or egg products containing the vaccine, but may also be packaged for easier deployment and shelf-life. 
 
 ## Oral bait deployment
 - allow vaccination of animals that cannot be easily captured or subdued for injection
-- can therefore reduce the training, manpower and equipment needed for vaccine deployment, while simultaneously accessing more of the animals in an area (Gibson et al. 2019). 
+- baits can be simply scattered, or placed near dogs that cannot be handled
+- can therefore reduce the training, manpower and equipment needed for vaccine deployment, while simultaneously accessing more of the animals in an area [(Gibson et al. 2019)](https://doi.org/10.1016/j.jvacx.2019.100015). 
 
 ## Successful programs using oral vaccine baits: Rabies in North America & Europe
-- Oral baits have been used successfully in North America and Europe to control rabies in a variety of wildlife species. 
-- For the past 30 years the US has held back the spread of rabies in raccoons to the western states, after the disease was introduced to Virginia. The National Rabies Management Program is the largest coordinated effort to control a zoonotic disease in wildlife populations ever undertaken in the U.S.
-- The program costs about \$28 million to run every year (see Slate et al. 2002), but it’s estimated to save taxpayers \$60 million in preventing the need for public health investigations, animal rabies tests, and access to post-exposure vaccines for humans.
+- oral baits have been used successfully in North America and Europe to control rabies in a variety of wildlife species. 
+- for the past 30 years the US has held back the spread of rabies in raccoons to the western states, after the disease was introduced to Virginia in 1981
+- the National Rabies Management Program is the largest coordinated effort to control a zoonotic disease in wildlife populations ever undertaken in the U.S.
+- costs about \$28 million to run every year (see [Slate et al. 2002)](https://escholarship.org/content/qt3gb9f18h/qt3gb9f18h_noSplash_b06aa9ec7fbdde336a72a2043bf74a10.pdf), but it’s estimated to save taxpayers \$60 million in preventing the need for public health investigations, animal rabies tests, and access to post-exposure vaccines for humans.
 
 ## Raccoon rabies in North America (2018)
 
@@ -138,10 +144,12 @@ baits are covered in a fishmeal-based coating to encourage consumption by raccoo
 
 
 ## Trial of oral baits in India by Mission Rabies
+- Mission Rabies conducted a pilot test of oral baiting in Goa, India in 2018 ([Mission Rabies](http://www.missionrabies.com/blog/oral-vaccines-could-provide-the-answer-to-rabies-elimination-in-stray-dogs)), where two vaccination strategies were compared
+- either teams of two traveled by scooter and offered dogs an empty oral bait construct, or teams of seven traveled by supply vehicle and used nets to catch dogs for parenteral vaccination ([Gibson et al. 2019](https://doi.org/10.1016/j.jvacx.2019.100015)).
+- the fixed operational team cost of catch-vaccinate-release was four times higher than oral bait handouts, at $127 USD per day, compared to $34 USD per day. 
+- use of oral baits also increased the proportion of dogs accessible for vaccination by 17% overall, and consistently reached a larger proportion of animals across land use types. 
+- staff also reported that dogs are more likely to run away from the net catching teams and alert dogs in the area by barking, while oral bait teams reported that dogs were often attracted to the baits and would gather around them.
 
-- synchronized mass dog vaccination campaigns in 12 cities using catch-vaccinate-release. They vaccinated 54,227 dogs with an average vaccination rate of 14.6 (CI 10- 20) dogs/person/day (Gibson et al. 2020). Post vaccination surveys at five of the sites indicated coverage rates of about 71.2%.
-- Extrapolation to a two week India national campaign suggested that 1.1 million staff and 160,000 trucks would be required using conventional injection implementing catch-vaccinate-release (Gibson et al. 2019). 
-- For the oral bait handout technique, Gibson et al. (2019) calculated that only 293,000 staff and 150,000 scooters would be needed for an annual two-week India-wide vaccination program 
 
 
 ## Oral baits trial in India and estimated costs
@@ -168,7 +176,8 @@ Figure 1: Cost estimates for canine injectable and oral bait rabies vaccines fro
 <font size="4"><div align="center">[Gibson et al. (2020)](https://doi.org/10.3390/tropicalmed5010047)</div></font>
 
 ## Linear programming (deterministic optimization)
-- e.g. transportation problem with constraints
+- e.g. transportation problem with constraints: a combinatorial problem that deals with transporting items from multiple sources to multiple destinations at minimum cost
+- approach has been used for other similar health care problems (e.g., )
 - each vaccination method has a different cost, 
 - each vaccation method has a different efficacy for each category of dog
 - minimize cost of the program, while ensuring that $R_0<1$
@@ -184,43 +193,47 @@ Figure 1: Cost estimates for canine injectable and oral bait rabies vaccines fro
   - annual vaccination of over 70% of the dog population may stop transmission  (e.g., [Coleman & Dye 1996)](https://doi.org/10.1016/0264-410X(95)).
  
 ## Uncertainty regarding oral bait cost
+- current estimates suggest oral bait is 5x more expensive than injectable 
 - no current supplier in India
 - not yet approved
-- charitable efforts aimed at reducing this cost
+- would charitable efforts aimed at increasing accessibility and reducing the cost of oral baits be helpful?
 
 ## Investigate optimization under uncertainty about oral bait price
 - one approach: systematic search
 - find optimal solution and compare to solution without oral baits
 - answer the question do oral baits lower the cost of a vaccination program
 
-## Use of oral baits reduce per dog cost of vaccination
+## Use of oral baits reduces per dog cost of vaccination
 <img src="breakeven.jpeg" width="85%" style="display: block; margin: auto;" />
 
 
-## Use of oral baits reduce per dog cost of vaccination
+## Use of oral baits is optimal accross a range of scenarios
 <img src="surfacecost.jpeg" width="85%" style="display: block; margin: auto;" />
+## Two classes of solutions
+- taking the scenario of 30000 dogs, given % of NC, remaining dogs dividing evenly between C and SC
+- find all optimal solutions accross a range of price
+- cluster using kmeans
  
 ## Fixed budget and acceptable risk
 - relatively low transmission rates
 - in some populations vaccination coverage of even a small percentage of the dog population may be sufficient to substantially reduce economic and DALY impacts
 - e.g., [Fitzpatrick et al. (2016](https://doi.org/10.1073/pnas.1604975113)) predict an 88% reduction in annual human rabies deaths for an ongoing program of canine vaccination that reaches ∼13% of the overall dog population.
 
-## Optimization problem maximize effective vaccination (deterministic)
+## Optimization problem: maximize effective vaccination for a fixed cost (deterministic, and then stochastic)
 - maximize effective vaccination rate, while not exceeding budget (e.g., $30,000)
     - objective function:  $\max\sum \frac{\sum{v_{ij}x_{ij}}}{d_i}$,</br> 
         - where  $v_{ij}$ is the efficacy of method $j$ on dog category $i$, and $x_{ij}$ is the number of dogs vaccinated in each category, $i$ by method $j$ and $d_i$ is the total number of dogs in the category $i$</font>
     - such that: all $\sum {c_{j}x_{ij}} < \$30 000$, 
         - $c_j$ is the cost for each vaccination method
 
-## Conclusion: Oral baits will substanitally reduce costs 
+## Conclusion: Oral baits will substantially reduce costs 
 
-- stuff here
-1. point
-2. point
+- across the scenarios investigated here:
+1. oral baits reduce the per dog cost of a 1 month vaccination program
+2. also reduce number of staff and their training needs (not shown here)
+3. cheaper and more feasible to use oral baits
 
-- caveat
-
-
+- caveat: EVERY parameter here is very uncertain
 
 ## Open Science
 
@@ -245,14 +258,28 @@ This work was supported by <br> Rethink Priorities ([https://rethinkpriorities.o
 <img src="rp-logos-04.png" width="130%" style="display: block; margin: auto 0 auto auto;" />
 </div>
 
-## Other references
-<font size="1">Gibson, A. D., et al. (2019). Oral bait handout as a method to access roaming dogs for rabies vaccination in Goa, India: A proof of principle study. Vaccine: X, 1, 100015. [https://doi.org/10.1016/j.jvacx.2019.100015](https://doi.org/10.1016/j.jvacx.2019.100015)
+## Lit Cited
+<font size="1">
+Coleman, P. G., & Dye, C. (1996). Immunization coverage required to prevent outbreaks of dog rabies. Vaccine, 14(3), 185–186. [https://doi.org/10.1016/0264-410X(95)00197-9](https://doi.org/10.1016/0264-410X(95)00197-9)</font>
+<br><font size="1"> Gibson, A. D., et al. (2019). Oral bait handout as a method to access roaming dogs for rabies vaccination in Goa, India: A proof of principle study. Vaccine: X, 1, 100015. [https://doi.org/10.1016/j.jvacx.2019.100015](https://doi.org/10.1016/j.jvacx.2019.100015)</font><br>
+<font size="1">Fitzpatrick, M. C., et al. (2016). One Health approach to cost-effective rabies control in India. Proceedings of the National Academy of Sciences, 113(51), 14574–14581. [https://doi.org/10.1073/pnas.1604975113](https://doi.org/10.1073/pnas.1604975113)</font>
+<br><font size="1">Gibson, A. D., et al. (2020). Reviewing Solutions of Scale for Canine Rabies Elimination in India. Tropical Medicine and Infectious Disease, 5(1), 47. [https://doi.org/10.3390/tropicalmed5010047](https://doi.org/10.3390/tropicalmed5010047)</font><br>
+<font size="1">Gibson, A. D., et al. (2019). Oral bait handout as a method to access roaming dogs for rabies vaccination in Goa, India: A proof of principle study. Vaccine: X, 1, 100015. [https://doi.org/10.1016/j.jvacx.2019.100015](https://doi.org/10.1016/j.jvacx.2019.100015)</font><br>
+<font size="1">Hampson, K., et al. (2015). Estimating the Global Burden of Endemic Canine Rabies. PLOS Neglected Tropical Diseases, 9(4), e0003709. [https://doi.org/10.1371/journal.pntd.0003709](https://doi.org/10.1371/journal.pntd.0003709)</font><br>
 
-Gibson, A. D., et al. (2020). Reviewing Solutions of Scale for Canine Rabies Elimination in India. Tropical Medicine and Infectious Disease, 5(1), 47. [https://doi.org/10.3390/tropicalmed5010047](https://doi.org/10.3390/tropicalmed5010047)</font>
+## Lit Cited cont'd
+<font size="1">One Health High Level Expert Panel (2021) Joint Tripartite (FAO, OIE, WHO) and UNEP Statement Tripartite and UNEP support OHHLEP’s definition of “One Health”
+[https://wedocs.unep.org/bitstream/handle/20.500.11822/37600/JTFOWU.pdf](https://wedocs.unep.org/bitstream/handle/20.500.11822/37600/JTFOWU.pdf)</font><br><font size="1">Radhakrishnan, S., et al. (2020). Rabies as a public health concern in India—A historical perspective. Tropical medicine and infectious disease, 5(4), 162.</font><br>
+<font size="1">Slate, D. et al. (2002). Oral rabies vaccination: a national perspective on program development and implementation. USDA National Wildlife Research Center-Staff Publications, 476. [https://escholarship.org/content/qt3gb9f18h/qt3gb9f18h_noSplash_b06aa9ec7fbdde336a72a2043bf74a10.pdf](https://escholarship.org/content/qt3gb9f18h/qt3gb9f18h_noSplash_b06aa9ec7fbdde336a72a2043bf74a10.pdf)</font><br>
+<font size="1">WHO Rabies Factsheet. (n.d.). Retrieved July 29, 2021, from [https://www.who.int/news-room/fact-sheets/detail/rabies](https://www.who.int/news-room/fact-sheets/detail/rabies)</font><br>
+<font size="1">WHO Rabies—India. (n.d.). Retrieved July 30, 2021, from [https://www.who.int/india/health-topics/rabies](https://www.who.int/india/health-topics/rabies)</font><br>
+<font size="1">WHO (2019) First annual progress report Global Strategic Plan to End Human Deaths from Dog-mediated Rabies by 2030. Retrieved November 20, 2021, from [https://www.who.int/publications-detail-redirect/WHO-CDS-NTD-NZD-2019.04](https://www.who.int/publications-detail-redirect/WHO-CDS-NTD-NZD-2019.04)</font><br>
+<font size="1">WHO (2018). WHO expert consultation on rabies: Third report. World Health Organization. [https://apps.who.int/iris/handle/10665/272364](https://apps.who.int/iris/handle/10665/272364)</font><br>
+<font size="1">WHO, FAO, & OIE. (2018). Zero by 30: The global strategic plan to end human deaths from dog-mediated rabies by 2030. World Health Organization. [https://apps.who.int/iris/handle/10665/272756](https://apps.who.int/iris/handle/10665/272756)</font><br>
 
 
 
 ## What do you think?
 
-- always want your feedback (https://www.quantitative-biology.ca/index.html#feedback)
+- always want your feedback (https://github.com/kcudding/rabies/issues)
 
