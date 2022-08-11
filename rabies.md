@@ -1,16 +1,6 @@
 ---
-title: "Untitled"
-author: "Kim Cuddington"
-date: "11/07/2022"
-output: 
-  ioslides_presentation: 
-    keep_md: yes
----
----
-title: 'Optimizing rabies vaccination'
-
-author: "Kim Cuddington (https://ecotheory.ca)"
-date: "17/08/2022"
+author: ""
+date: ""
 output: 
   ioslides_presentation: 
     keep_md: yes
@@ -19,8 +9,23 @@ css: quantbiotalk.css
 ---
 
 
+## <font size=50> Optimizing rabies vaccination </font>
 
+<img src="dogs.png" width="80%" style="display: block; margin: auto;" />
+<br><br>
+<div class="columns-2">
+<div style="float: left; width: 100%;">
 
+Kim Cuddington  
+[https://ecotheory.ca](https://ecotheory.ca)<br>
+11.08.22
+</div>
+
+<div style="float: right; width: 100%;">
+
+<img src="Waterloo_Science_Logo_horiz_bk.jpg" width="80%" style="display: block; margin: auto 0 auto auto;" />
+</div>
+</div>
 ## Plan 
   + Why rabies?
   + Oral baits for vaccination
@@ -54,14 +59,14 @@ css: quantbiotalk.css
  - [Hampson et al. (2015)](https://doi.org/10.1371/journal.pntd.0003709) estimated the global welfare impact of human rabies at 3.7 million disability-adjusted human life years (DALYs) lost every year
 - the global economic burden of dog-mediated rabies is estimated at US$ 8.6 billion per year ([WHO Rabies Factsheet](https://www.who.int/news-room/fact-sheets/detail/rabies)), 
 - 75% of these economic losses are due to premature death and costs associated with seeking treatment [Hampson et al.(2015](https://doi.org/10.1371/journal.pntd.0003709))
-- average victim itypically young and living in a rural area 
+- average victim is typically young and living in a rural area 
 - post-exposure treatment is expensive, and must be employed unless there is certainty that the dog that bit the patient is negative for rabies
 -  83% of the total rabies control costs in both Asia and Africa is put towards post exposure treatment ([Knobel et al. 2005](https://www.scielosp.org/article/ssm/content/raw/?resource_ssm_path=/media/assets/bwho/v83n5/v83n5a12.pdf)), even though, because of costs, a portion of those treated do not finish the course of post-exposure vaccinations. 
 
 ## Why rabies now?
 
 - the WHO, FAO (Food and Agriculture Organization) and OIE (World Organization for Animal Health), have prioritized rabies as a model disease for a One Health approach. 
-- one Health refers to the collaboration between different disciplines and sectors to recognize the connection between humans, animals, and the environment, and the necessity for integrated health interventions 
+- One Health refers to the collaboration between different disciplines and sectors to recognize the connection between humans, animals, and the environment, and the necessity for integrated health interventions 
 - these agencies have launched the ‘United Against Rabies Forum’ which advocates and prioritizes investments in rabies control, and coordinates the global rabies-elimination efforts to achieve zero human deaths from dog-mediated rabies by 2030 ([WHO, FAO, & OIE 2018](https://apps.who.int/iris/handle/10665/272756)). 
 
 
@@ -140,7 +145,7 @@ baits are covered in a fishmeal-based coating to encourage consumption by raccoo
 
 ## Oral baits in Canada
 
-<img src="ontariobait.png" width="100%" style="display: block; margin: auto 0 auto auto;" />
+<img src="ontariobait.png" width="80%" style="display: block; margin: auto;" />
 
 
 ## Trial of oral baits in India by Mission Rabies
@@ -156,6 +161,18 @@ baits are covered in a fishmeal-based coating to encourage consumption by raccoo
 <img src="OBHvsCVR.png" width="86%" style="display: block; margin: auto;" />
 <font size="4"><div align="center">
 Figure 1: Cost estimates for canine injectable and oral bait rabies vaccines from Wallace et al. (2020), where bars give the median estimate in US dollars, and lines indicate the probable range (a). Estimated vaccination rates from Gibson et al. (2019) where bars given the mean number of dogs vaccinated per team member per 6 hour day and lines indicate the 95% confidence intervals about these estimates (b).</div></font>
+
+## Disease dynamics modelling of rabies (not doing this!)
+<img src="SIRmodel.Asamoah2017.png" width="60%" style="display: block; margin: auto;" />
+
+<font size=4><div align="center">[Asamoah et al 2017](https://www.hindawi.com/journals/jam/2017/2451237/)</div></font>
+
+## Data limitations
+
+- most published estimates of dog population size do not seem to be supported by data (see Appendix 1).
+- using reports of ratios of human to dog populations in urban and rural areas, we estimate a total free-roaming dog population of 38 million in 2020 with  order of magnitude error bounds on this estimate (Appendix 1). 
+- the actual incidence of rabies in dog populations is not known (Belsare and Gompper 2013).
+- however, we need not delay vaccination programs because of lack of information on the actual size of the free-roaming dog population or the rabies incidence rates 
 
 ## Design vaccination progam for an Indian city
 
@@ -175,18 +192,40 @@ Figure 1: Cost estimates for canine injectable and oral bait rabies vaccines fro
 <img src="tablecosts.png" width="90%" style="display: block; margin: auto;" />
 <font size="4"><div align="center">[Gibson et al. (2020)](https://doi.org/10.3390/tropicalmed5010047)</div></font>
 
+
+## Vaccine efficacy
+<br><br> 
+<img src="vaxeffGbison.png" width="100%" style="display: block; margin: auto;" />
+<font size="4"><div align="center">[Gibson et al. (2020)](https://doi.org/10.3390/tropicalmed5010047)</div></font>
+
+
+
 ## Linear programming (deterministic optimization)
+<div class="columns-2">
+<div style="float: left; width: 100%;">
+
 - e.g. transportation problem with constraints: a combinatorial problem that deals with transporting items from multiple sources to multiple destinations at minimum cost
-- approach has been used for other similar health care problems (e.g., )
 - each vaccination method has a different cost, 
 - each vaccation method has a different efficacy for each category of dog
 - minimize cost of the program, while ensuring that $R_0<1$
+</div>
+<div style="float: right; width: 100%;">
+<img src="transport.png" width="100%" style="display: block; margin: auto;" />
+<font size="4"><div align="center">Image by [Akhitha Babu](https://towardsdatascience.com/optimization-in-transportation-problem-f8137044b371)</div></font>
+
+</div>
+</div>
+
+## One means of optimizating health interventions
+- approach has been used for other similar health care problems (e.g., Earnshaw et al. 2002 Optimal Allocation of Resources across Four Interventions for Type 2 Diabetes)
+- very simple place to start
+- (I think) compares favourably to the use of excel spreadsheets! 
 
 ## Linear programming (deterministic optimization)
 
 - objective function:  $\min\sum \sum {c_j}x_{ij}$,</br> 
   - where $c_j$ is the cost for each vaccination method,  and $x_{ij}$ is the number of dogs vaccinated in each category, $i$ by method $j$</font>
-- such that: for each dog category, $i$, $\frac{\sum{x_{i}v_{ij}}}{{d_i}} > 0.7$
+- such that: for each dog category, $i$, $\sum{x_{i}v_{ij}} \geq 0.7d_i$
   - where $d_i$ is the number of dogs in each category in the population 
   - $v_{ij}$ is the efficacy of method $j$ on dog category $i$
   - 0.7 is vaccination rate given in the literature regarding $R_0<1$ 
@@ -196,35 +235,65 @@ Figure 1: Cost estimates for canine injectable and oral bait rabies vaccines fro
 - current estimates suggest oral bait is 5x more expensive than injectable 
 - no current supplier in India
 - not yet approved
-- would charitable efforts aimed at increasing accessibility and reducing the cost of oral baits be helpful?
+- Research question: would charitable efforts aimed at increasing accessibility and reducing the cost of oral baits be helpful?
 
 ## Investigate optimization under uncertainty about oral bait price
 - one approach: systematic search
 - find optimal solution and compare to solution without oral baits
-- answer the question do oral baits lower the cost of a vaccination program
+- answer the question: do oral baits lower the per dog cost of a vaccination program
 
 ## Use of oral baits reduces per dog cost of vaccination
 <img src="breakeven.jpeg" width="85%" style="display: block; margin: auto;" />
 
 
-## Use of oral baits is optimal accross a range of scenarios
+## Use of oral baits is optimal for many combos
 <img src="surfacecost.jpeg" width="85%" style="display: block; margin: auto;" />
-## Two classes of solutions
-- taking the scenario of 30000 dogs, given % of NC, remaining dogs dividing evenly between C and SC
-- find all optimal solutions accross a range of price
-- cluster using kmeans
+
+## Three classes of solutions
+- given % of NC, remaining dogs dividing evenly between C and SC, find all optimal solutions across a range of price
+- cluster solutions using kmeans
+- if bait cost > $3.9 and NC > 0.48 use CVR (1), if not use ORV (2),  otherwise use mixed (2)
+
+
+<img src="tablesoln.png" width="65%" style="display: block; margin: auto;" />
  
-## Fixed budget and acceptable risk
+
+## Acceptable risk
 - relatively low transmission rates
 - in some populations vaccination coverage of even a small percentage of the dog population may be sufficient to substantially reduce economic and DALY impacts
 - e.g., [Fitzpatrick et al. (2016](https://doi.org/10.1073/pnas.1604975113)) predict an 88% reduction in annual human rabies deaths for an ongoing program of canine vaccination that reaches ∼13% of the overall dog population.
 
-## Optimization problem: maximize effective vaccination for a fixed cost (deterministic, and then stochastic)
-- maximize effective vaccination rate, while not exceeding budget (e.g., $30,000)
-    - objective function:  $\max\sum \frac{\sum{v_{ij}x_{ij}}}{d_i}$,</br> 
-        - where  $v_{ij}$ is the efficacy of method $j$ on dog category $i$, and $x_{ij}$ is the number of dogs vaccinated in each category, $i$ by method $j$ and $d_i$ is the total number of dogs in the category $i$</font>
-    - such that: all $\sum {c_{j}x_{ij}} < \$30 000$, 
-        - $c_j$ is the cost for each vaccination method
+
+        
+## Optimization under uncertainty: chance constraint
+- objective function:  $\min f(x, \zeta)$,</br> 
+ 
+- such that:  $h(x,\zeta)\geq0$
+  - where $x$ is the decision vector, and $\zeta$ is the vector of uncertainty
+  
+- under chance constraint, reformulate the inequality constraint as
+$P(h(x,\zeta)\geq0)\geq p$, where $p \in [0,1]$
+- relax the problem into equivalent deterministic (i.e., use the probability density function and substitute the left hand side of the constraint with a deterministic expression)
+- issues with convexity and stability can mean that small changes in the actual density function could cause major changes in the optimal solution
+
+## Optimization under uncertainty: chance constraint
+- simplest: individual chance constraint
+- objective function:  $\min\sum \sum {c_j}x_{ij}$,</br> 
+  - where $c_j$ is the cost for each vaccination method,  and $x_{ij}$ is the number of dogs vaccinated in each category, $i$ by method $j$</font>
+- such that: for each dog category, $i$, 
+$$ P \left( \sum x_{ij} v_{ij} \geq \zeta_{i} )\right) \geq p$$ 
+  - where $v_{ij}$ is the efficacy of method $j$ on dog category $i$ and $\zeta_i$ is the number of vaccinated dogs required to achieve $R_0<1$, and p is a given probability
+  
+## Optimization under uncertainty: chance constraint 
+- if we assume that $\zeta_i$ is normally distributed with mean $d_i$ and variance $\sigma^2_i$, we can transform the constraint for each i into $$P\left(\sum x_{ij}v_{ij}\right) \ge d_i + \sigma_i q_p,$$
+where $q_p$ is the p-quantile of the standard normal distribution. 
+
+- then solve as usual for a given p
+
+## Comparing costs for different risks
+
+<img src="50vs95.jpeg" width="85%" style="display: block; margin: auto;" />
+ 
 
 ## Conclusion: Oral baits will substantially reduce costs 
 
@@ -239,6 +308,8 @@ Figure 1: Cost estimates for canine injectable and oral bait rabies vaccines fro
 
 - providing data, source code and dynamic documents to make work completely reproducible 
 - Note this document and figures provided at [https://github.com/kcudding/rabies/rabies.md](https://github.com/kcudding/rabies/rabies.md)
+
+<br><br>
 
 <img src="https://imgs.xkcd.com/comics/how_it_works.png" width="60%" style="display: block; margin: auto;" />
 <font size="2"><div align="center">https://xkcd.com/385/ </div></font>
@@ -277,7 +348,16 @@ Coleman, P. G., & Dye, C. (1996). Immunization coverage required to prevent outb
 <font size="1">WHO (2018). WHO expert consultation on rabies: Third report. World Health Organization. [https://apps.who.int/iris/handle/10665/272364](https://apps.who.int/iris/handle/10665/272364)</font><br>
 <font size="1">WHO, FAO, & OIE. (2018). Zero by 30: The global strategic plan to end human deaths from dog-mediated rabies by 2030. World Health Organization. [https://apps.who.int/iris/handle/10665/272756](https://apps.who.int/iris/handle/10665/272756)</font><br>
 
+## What about culling?
+- little evidence that culling is an effective control measure (see review Morters et al. 2013), possibly because dog-to-human transmission is not strictly density-dependent. d- Data and modeling also indicate that combining vaccination with surgical sterilization is not usually a cost-effective means of controlling rabies transmission to humans. 
+- in a model for the Tamil Nadu region of India, Fitzpatrick et al. (2016) noted that the main impacts of sterilization were to reduce population turnover so that fewer dogs needed be vaccinated to maintain herd immunity, and to permanently mark the dogs so that vaccine doses were not wasted on animals that still had immunity. 
 
+## Optimization problem: maximize effective vaccination for a fixed cost (deterministic, and then stochastic)
+- maximize effective vaccination rate, while not exceeding budget (e.g., $30,000)
+    - objective function:  $\max\sum \frac{\sum{v_{ij}x_{ij}}}{d_i}$,</br> 
+        - where  $v_{ij}$ is the efficacy of method $j$ on dog category $i$, and $x_{ij}$ is the number of dogs vaccinated in each category, $i$ by method $j$ and $d_i$ is the total number of dogs in the category $i$</font>
+    - such that: all $\sum {c_{j}x_{ij}} < \$30 000$, 
+        - $c_j$ is the cost for each vaccination method
 
 ## What do you think?
 

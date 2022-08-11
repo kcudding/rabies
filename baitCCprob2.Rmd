@@ -1,0 +1,425 @@
+---
+title: "baitprice"
+author: "Kim Cuddington"
+date: "09/07/2022"
+output: 
+  html_document: 
+    fig_caption: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+rm(list=ls())
+library(lpSolve)
+library(openxlsx)
+
+
+CP=c(.95,.80,.05)
+DD=c(.95,.80,.05)
+CVR=c(.05,.95,.80)
+ORV=c(.05,.95,.95)
+
+
+CP=c(.95,.60,.05)
+DD=c(.95,.75,.05)
+CVR=c(.05,.80,.80)
+ORV=c(.05,.85,.80)
+
+pve=data.frame(CP,DD,CVR,ORV)
+vaxcats=colnames(pve)
+dogcats=c("C", "SC", "NC")
+rownames(pve)=dogcats
+
+knitr::kable(pve, digits=2, caption="Table: Vaccination efficacy from Gibson et al. 2020")
+
+
+# use made up costs for original dog and pve estimates
+Dt=30000
+C=0.28
+NCseq=seq(from=0, to=1-C, by=0.1)
+
+
+
+```
+
+```{r gibson}
+
+# Gibson, A. D., Wallace, R. M., Rahman, A., Bharti, O. K., Isloor, S., Lohr, F., ... & Day, M. J. (2020). Reviewing solutions of scale for canine rabies elimination in India. Tropical medicine and infectious disease, 5(1), 47.
+
+# Gibson 2020 Overall staff rate (dogs/person/day) OBH-DD=41 CVR=14.6 DD=23.9
+# Scenarios for dog population size in Bangalore city were calculated based on best, mean and worse case scenarios for available dog-to-human ratios in Indian urban settings; Scenario A 83:1, (B) 50:1, (C) 23:1
+
+# there are separate spreadsheets for each of these SUpplementary materials 1 https://www.mdpi.com/2414-6366/5/1/47
+
+rm(cost, costG, costGm)
+costGm=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",
+sheet=4,rows=c(28:73),cols=c(1:7),
+startRow = 28)
+costGm=costGm[complete.cases(costGm),]
+colnames(costGm)[4:6]=c("low_unit_cost", "mean_unit_cost", "hi_unit_cost")
+rownames(costGm)=c(1:nrow(costGm))
+costG=as.data.frame(costGm)
+costG[,2:6]=apply(costG[,2:6], 2, function(x) as.numeric(x, na.rm=TRUE))
+
+knitr::kable(costG[-c(1,2,9,10,13,14:18),-(2:3)], digits=2, caption="Table: Vaccination costs Gibson et al. 2020")
+costGtable=costG[-c(1,2,9,10,13,14:18),-(2:3)]
+rownames(costGtable)=c(1:nrow(costGtable))
+knitr::kable(costGtable, digits=2, caption="Table: Vaccination costs Gibson et al. 2020")
+
+
+rateG=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",colNames=FALSE,
+sheet=4,rows=c(5:8),cols=c(1:3))
+#these are NOT right on the Gibson sheet
+
+
+#use capacity from scenario
+rateG=read.xlsx("FIX_Bang Scen A - OBH - 11d.xlsx",colNames=FALSE,
+sheet=6,rows=c(33:36),cols=c(1:2))
+
+```
+
+
+```{r}
+
+#What is our minimum per dose cost for each method?
+
+#costvax=c(1,1, 1, 3 )
+
+injvaxcost=sum(costG[c(27, 29:30), 5])
+#obcost=sum(costG[c(28,30), 5]) #median of range quoted by williams in another paper is 3 (REF)? at this value not cost effective
+NCseq=seq(from=0.01, to=0.99, by=0.01)
+svsoln=list()
+pvex=list()
+obs=seq(from=.5, to=4.5001, by=0.05)
+pdogcost=matrix(NA, nrow=length(obs), ncol=length(NCseq))
+tstaff=matrix(NA, nrow=length(obs), ncol=length(NCseq))
+cnt=0
+for (qk in seq_along(NCseq)){
+#NC=0.48
+  NC=NCseq[qk]
+C=(1-NC)/2
+SC=C
+#SC=1-(C+NC)
+if(SC<0) SC=0
+pC=c(C,SC,NC)
+d=Dt*pC
+
+
+for (q in seq_along(obs)) {
+cnt=cnt+1
+obcost=obs[q]
+print(q)
+
+
+costvax=c(injvaxcost, injvaxcost,injvaxcost,obcost)
+
+#the use rate of mean salary
+# and guestimate of the number of vaccination staff required per vax
+# perhaps a lower number per CVR? certainly exclude the driver
+# then divide by per person day vax rate
+numpeople=c(1,2,5,2)*mean(costG[4:7, 5])/rateG[,2]
+
+#assume motorcycle/moped for DD and OBH
+#assume van for VCR
+
+
+#not sure what the government vehicle does? or is how different?
+
+# and this per day? so divide by number of dogs/person/day
+
+ #costs between van and cycle not distinguished here? assume 2x
+vehrent=sum(costG[11:12,5])/rateG[,2]
+vehrent=vehrent*c(0,1,2,1)
+
+ 
+#specialized costs (so exclude coolers here)
+#for example CVR kit...what is the per dog rate of this?? all dogs?
+CVRcost=costG[21,5]/20000+costG[25,5]/500+costG[8,5]/rateG[3,2] ##kit, human rabies treat,driver
+CPDDcost=costG[24,5]/2000
+OBcost=costG[24,5]/1000 #assume higher than dd/cp, but lower than 
+equip=c(CPDDcost,CPDDcost,CVRcost,OBcost) #really these are fixed costs and need a different method of incorporation probably equip+people+costvax
+
+bcost=costvax+numpeople+equip+vehrent
+#the absolute largest item here is the per unit cost
+# of the OB at 3.00
+
+#number of vax attempts per each successful vax
+pvecd=1/pve
+ pvecd[,]=1
+#cost per successful vax attempt
+pvecd=bcost*t(pvecd)
+
+
+pvecdd=pvecd
+obj=c((as.matrix(pvecdd)))
+m <- 3
+n <- 4
+constr <- matrix (0 , n +m , n*m )
+for(i in 1:m){ 
+  for(j in 1:n){ 
+    constr[i, n*(i-1) + j] <- 1
+    constr[m+j, n*(i-1) + j] <- 1
+  }
+}
+
+constr[1,1:4]=as.matrix(pve[1,])
+constr[2,5:8]=as.matrix(pve[2,])
+constr[3,9:12]=as.matrix(pve[3,])
+
+rhs <- c(0.7*d[1], 0.7*d[2], 0.7*d[3],  rep(sum(d),4))
+constr.dir <- c(rep(">=",3 ), rep("<=", 4))
+
+
+prod.trans <- lp ("min", objective.in=obj, 
+                  constr, constr.dir, rhs)
+rm(soln)
+soln=(matrix(prod.trans$solution, nrow=4))
+print(soln)
+print(obcost)
+
+
+pvex=soln*t(pve)
+solntab=(rbind(soln,colSums(pvex)/d ))
+solntab=rbind(solntab,d)
+colnames(solntab)=dogcats
+rownames(solntab)=c(vaxcats,"%vax", "dogs")
+svsoln[[cnt]]=soln
+#solntab
+#knitr::kable(pvecdd, digits=2, caption="Table: Vax costs * 1/efficacy: cost per unit unit successful vax")
+#knitr::kable(solntab, digits=2, caption="Table: Optimal vaccine allocation strategy")
+campcost=soln*bcost
+
+
+#Calc needed person/days
+
+meths=solntab[1:4,]
+methunits=rowSums(meths)
+pdays=methunits/rateG[,2]
+
+#Calc needed persons (/by campaign days)
+# one month?
+
+staff=pdays/30
+#tstaff=sum(staff)
+tstaff[q,qk]=sum(staff)
+pdogcost[q, qk]=(sum(campcost)/sum(meths))
+
+}
+}
+```
+
+```{r}
+
+# check the cost impact of oral baits
+# set efficicacy to zero and rerun the analysis
+svsolnNO=list()
+pvexNO=list()
+
+pdogcostNO=rep(NA, length(NCseq))
+cnt=0
+for (qk in seq_along(NCseq)){
+#NC=0.48
+  NC=NCseq[qk]
+C=(1-NC)/2
+SC=C
+#SC=1-(C+NC)
+if(SC<0) SC=0
+pC=c(C,SC,NC)
+d=Dt*pC
+
+
+
+
+
+pveno=pve
+pveno=pveno[, -4]
+pveno
+#number of vax attempts per each successful vax
+pvecdno=1/pveno
+ pvecdno[,]=1
+#cost per successful vax attempt
+pvecdno=bcost[-4]*t(pvecdno)
+
+objno=c((as.matrix(pvecdno)))
+
+m <- 3
+n <- 3
+constr <- matrix (0 , n +m , n*m )
+for(i in 1:m){ 
+  for(j in 1:n){ 
+    constr[i, n*(i-1) + j] <- 1
+    constr[m+j, n*(i-1) + j] <- 1
+  }
+}
+# this array will ensure we cannot exceed the number of dogs in 
+# a category
+
+
+constr[1,1:3]=as.matrix(pveno[1,])
+constr[2,4:6]=as.matrix(pveno[2,])
+constr[3,7:9]=as.matrix(pveno[3,])
+
+rhs <- c(0.7*d[1], 0.7*d[2], 0.7*d[3],  rep(sum(d),3))
+         
+ constr.dir <- c(rep(">=",3 ), rep("<=", 3))
+#                rep(">=",3))
+
+prod.trans <- lp ("min", objective.in=objno, 
+                  constr, constr.dir, rhs)
+
+rm(soln)
+soln=(matrix(prod.trans$solution, nrow=3))
+
+
+pvex=soln*t(pveno)
+solntab=(rbind(soln,colSums(pvex)/d ))
+solntab=rbind(solntab,d)
+colnames(solntab)=dogcats
+rownames(solntab)=c(vaxcats[-4],"%vax", "dogs")
+solntab
+knitr::kable(pvecdd, digits=2, caption="Table: no oral baits: Vax costs * 1/efficacy: cost per unit unit successful vax")
+knitr::kable(solntab, digits=2, caption="Table: No oral baits: Optimal vaccine allocation strategy")
+
+campcostNO=soln*bcost[1:3]
+
+
+#Calc needed person/days
+
+meths=solntab[1:3,]
+methunits=rowSums(meths)
+pdays=methunits/rateG[1:3,2]
+
+#Calc needed persons (/by campaign days)
+# one month?
+
+staff=pdays/30
+tstaff=sum(staff)
+
+
+
+pdogcostNO[qk]=sum(campcostNO)/sum(meths)
+}
+```
+
+
+
+```{r}
+spr=40
+
+plot(obs,pdogcost[,spr], xlab="oral bait cost (USD)", ylab="per dog vaccination cost for optimal strategy (USD", pch=16, las=1, bty="L")
+
+jpeg('baseR_figure.jpeg', width =180, 
+     height = 150,
+     units = 'mm', pointsize = 12,
+     quality = 75,
+     res = 300)
+
+plot(obs,pdogcost[,spr], xaxt = "n", yaxt = "n", xlab="oral bait cost (USD)", ylab="per dog vaccination cost for optimal strategy (USD)",type="l", lwd=2,las=1, bty="L", xlim=c(0,4.5),
+     main=paste("Scenario with %NC dogs =", NCseq[spr]))  # no default y axis
+p <- pretty(par("usr")[3:4])  # find nice breaks at actual y range
+q<-pretty(par("usr")[1:2])
+l <- formatC(p, format="f", digits=2) # format w/12
+m<-formatC(q, format="f", digits=2)
+axis(2, at=p, labels=l,las=1)
+axis(1, at=q, labels=m)
+
+abline(h=pdogcostNO[spr], col="dark green", lwd=1.5, lty=2)
+text(x=1.25, y=2.59,"per dog cost in campaign without oral baits", col="dark green")
+
+idx=which.min(round(abs(pdogcost[,spr]-pdogcostNO[spr]),3))
+
+
+
+
+text(x=obs[idx]-.9, y=2,paste("break even cost $", sprintf("%.2f",round(obs[idx-1],2))), col="red")
+segments(obs[idx-1], y0=pdogcost[idx-1, spr], x1=obs[idx-1], y1=0,col = "red", lty = 3, lwd = 1.5)
+
+dev.off()
+
+```
+
+```{r}
+persp(obs,NCseq, pdogcost, theta=30, phi=18)
+
+#p <- pretty(par("usr")[3:4])  # find nice breaks at actual y range
+#q<-pretty(par("usr")[1:2])
+#l <- formatC(p, format="f", digits=2) # format w/12
+#m<-formatC(q, format="f", digits=2)
+
+jpeg('baseR2_figure.jpeg', width =180, 
+     height = 150,
+     units = 'mm', pointsize = 12,
+     quality = 75,
+     res = 300)
+
+M=sweep(pdogcost,2, pdogcostNO)
+
+bkline=min(obs[which(round(rowSums(M), 2)==0)-1])
+filled.contour(obs,NCseq, pdogcost, plot.title = title(main = "",
+    ylab = "% never confined dogs", xlab = "oral bait cost (USD)",
+     abline(v=bkline),text(x=2.75, y=0.6,paste("oral baits no longer optimal",sprintf('\u2192')))),
+    key.title = title(main = "vax cost\n per dog"),
+    
+    key.axes=axis(side=4,at=q[3:7],labels=m[3:7]),
+    plot.axes={
+      #abline(v=3.6)
+      axis(2, at=c(0.2, 0.4, 0.6, 0.8), labels=c("0.2", "0.4", "0.6", "0.8"),las=1)
+axis(side=1,at=q[3:7],labels=m[3:7]) 
+      }
+)
+dev.off()
+#text(x=1.5, y=0.6, "oral baits not optimal")
+
+#filled.contour(obs,NCseq,M)
+```
+
+
+```{r}
+
+cname=as.vector(outer(colnames(pvecd), rownames(pvecd), paste, sep="_"))
+cname=as.vector(outer(rownames(pvecd), colnames(pvecd),paste, sep="_"))
+#cnames=cname[1,5,9, 2,6,10,3,7,11, 4,8,12]
+solnf<- as.data.frame(matrix(ncol=12,nrow=length(svsoln)))
+names(solnf)<-cname
+for (i in 1:12) {
+solnf[,i]=sapply(svsoln, `[`,i)
+}
+
+#diso <- dist(solnf, method = "euclidean")
+#p = hclust(diso, method = "single", )
+#plot(p, cex = 0.5, main = "", xlab = "")
+pc <- prcomp(solnf)
+kcout=kmeans(solnf, 3)
+kcout$centers
+#three classes of solutions
+plen=vector()
+Nlen=vector()
+cnt=0
+for (i in seq_along(NCseq)) {
+  for (j in seq_along(obs)) {
+    cnt=cnt+1
+    Nlen[cnt]=NCseq[i]
+    plen[cnt]=obs[j]
+    
+  }
+}
+
+clsoln=data.frame(cluster=kcout$cluster, NC=Nlen, ocost=plen)
+
+library("rpart")
+solnf$cluster=kcout$cluster
+#RFK=randomForest(x=solnf, y=kcout$cluster)
+RFK=rpart(cluster~.,data=clsoln, method = "class")
+
+
+library(rpart.plot)
+rpart.plot(RFK, box.palette = 0)
+
+barplot(kcout$centers)
+knitr::kable(t(kcout$centers))
+
+```
