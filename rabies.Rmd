@@ -99,10 +99,10 @@ include_graphics("Indianews.png")
 
 ## Dog vaccination methods
 - in countries like India, where there are many free-roaming dogs that may or may not be owned, various vaccination strategies may be employed
-- central  point vaccination is where dog owners bring their pets to a central location such as a veterinarian office, or a community clinic during a vaccination blitz
-- door-to-door are strategies are where teams move from house-to-house to vaccinate dogs that can be handled by their owners, but which were not brought to a central point clinic 
+- **central  point vaccination (CP)** is where dog owners bring their pets to a central location such as a veterinarian office, or a community clinic during a vaccination blitz
+- **door-to-door (DD)** are strategies are where teams move from house-to-house to vaccinate dogs that can be handled by their owners, but which were not brought to a central point clinic 
 - these two strategies have only been successful at large scale where most dogs are responsibly owned (e.g., Latin America; [Vigilato et al. 2013](https://doi.org/10.3201/eid1904.121482))
-- for animals that cannot be easily handled, catch-vaccinate-release entails a team of people capturing the animal in a net, injecting the vaccine and then releasing
+- for animals that cannot be easily handled, **catch-vaccinate-release (CVR)** entails a team of people capturing the animal in a net, injecting the vaccine and then releasing
 
 ## Oral baits for vaccination
 
@@ -168,7 +168,7 @@ include_graphics("ontariobait.png")
 ## Trial of oral baits in India by Mission Rabies
 - Mission Rabies conducted a pilot test of oral baiting in Goa, India in 2018 ([Mission Rabies](http://www.missionrabies.com/blog/oral-vaccines-could-provide-the-answer-to-rabies-elimination-in-stray-dogs)), where two vaccination strategies were compared
 - either teams of two traveled by scooter and offered dogs an empty oral bait construct, or teams of seven traveled by supply vehicle and used nets to catch dogs for parenteral vaccination ([Gibson et al. 2019](https://doi.org/10.1016/j.jvacx.2019.100015)).
-- the fixed operational team cost of catch-vaccinate-release was four times higher than oral bait handouts, at $127 USD per day, compared to $34 USD per day. 
+- the fixed operational team cost of catch-vaccinate-release was four times higher than oral bait handouts, at \$127 USD per day, compared to \$34 USD per day. 
 - use of oral baits also increased the proportion of dogs accessible for vaccination by 17% overall, and consistently reached a larger proportion of animals across land use types. 
 - staff also reported that dogs are more likely to run away from the net catching teams and alert dogs in the area by barking, while oral bait teams reported that dogs were often attracted to the baits and would gather around them.
 
@@ -179,7 +179,7 @@ include_graphics("ontariobait.png")
 include_graphics("OBHvsCVR.png")
 ```
 <font size="4"><div align="center">
-Figure 1: Cost estimates for canine injectable and oral bait rabies vaccines from Wallace et al. (2020), where bars give the median estimate in US dollars, and lines indicate the probable range (a). Estimated vaccination rates from Gibson et al. (2019) where bars given the mean number of dogs vaccinated per team member per 6 hour day and lines indicate the 95% confidence intervals about these estimates (b).</div></font>
+Figure 1: Cost estimates for canine injectable and oral bait rabies vaccines from [Wallace et al. (2020)](https://doi.org/10.1017/S0950268819001158), where bars give the median estimate in US dollars, and lines indicate the probable range (a). Estimated vaccination rates from [Gibson et al. (2019)](https://doi.org/10.1016/j.jvacx.2019.100015) where bars given the mean number of dogs vaccinated per team member per 6 hour day and lines indicate the 95% confidence intervals about these estimates (b).</div></font>
 
 ## Disease dynamics modelling of rabies (not doing this!)
 ```{r, out.width = "60%",fig.align = 'center'}
@@ -201,7 +201,7 @@ include_graphics("SIRmodel.Asamoah2017.png")
     - central point (CP) (e.g., take the dog to the vet)
     - door to door (DD) (2 person crew, small vehicle)
     - catch, vaccinate, release (CVR) (5-6 person crew, large vehicle)
-    - oral bait handout (OBH) (2 person crew, small vehicle)
+    - oral bait handout (ORV) (2 person crew, small vehicle)
   
 + 3 categories of dogs: 
     - always confined (C) 
@@ -342,7 +342,7 @@ include_graphics("50vs95.jpeg")
 ## Open Science
 
 - providing data, source code and dynamic documents to make work completely reproducible 
-- Note this document and figures provided at [https://github.com/kcudding/rabies/rabies.md](https://github.com/kcudding/rabies/rabies.md)
+- Note this document and figures provided at [https://github.com/kcudding/rabies/blob/main/rabies.md](https://github.com/kcudding/rabies/blob/main/rabies.md)
 
 <br><br>
 
@@ -376,11 +376,13 @@ Coleman, P. G., & Dye, C. (1996). Immunization coverage required to prevent outb
 <br><font size="1">Gibson, A. D., et al. (2020). Reviewing Solutions of Scale for Canine Rabies Elimination in India. Tropical Medicine and Infectious Disease, 5(1), 47. [https://doi.org/10.3390/tropicalmed5010047](https://doi.org/10.3390/tropicalmed5010047)</font><br>
 <font size="1">Gibson, A. D., et al. (2019). Oral bait handout as a method to access roaming dogs for rabies vaccination in Goa, India: A proof of principle study. Vaccine: X, 1, 100015. [https://doi.org/10.1016/j.jvacx.2019.100015](https://doi.org/10.1016/j.jvacx.2019.100015)</font><br>
 <font size="1">Hampson, K., et al. (2015). Estimating the Global Burden of Endemic Canine Rabies. PLOS Neglected Tropical Diseases, 9(4), e0003709. [https://doi.org/10.1371/journal.pntd.0003709](https://doi.org/10.1371/journal.pntd.0003709)</font><br>
+<font size="1">Morters, M. K., Restif, O., Hampson, K., Cleaveland, S., Wood, J. L., & Conlan, A. J. (2013). Evidence‐based control of canine rabies: a critical review of population density reduction. Journal of animal ecology, 82(1), 6-14. [https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2656.2012.02033.x](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2656.2012.02033.x)</font><br>
 
 ## Lit Cited cont'd
 <font size="1">One Health High Level Expert Panel (2021) Joint Tripartite (FAO, OIE, WHO) and UNEP Statement Tripartite and UNEP support OHHLEP’s definition of “One Health”
 [https://wedocs.unep.org/bitstream/handle/20.500.11822/37600/JTFOWU.pdf](https://wedocs.unep.org/bitstream/handle/20.500.11822/37600/JTFOWU.pdf)</font><br><font size="1">Radhakrishnan, S., et al. (2020). Rabies as a public health concern in India—A historical perspective. Tropical medicine and infectious disease, 5(4), 162.</font><br>
 <font size="1">Slate, D. et al. (2002). Oral rabies vaccination: a national perspective on program development and implementation. USDA National Wildlife Research Center-Staff Publications, 476. [https://escholarship.org/content/qt3gb9f18h/qt3gb9f18h_noSplash_b06aa9ec7fbdde336a72a2043bf74a10.pdf](https://escholarship.org/content/qt3gb9f18h/qt3gb9f18h_noSplash_b06aa9ec7fbdde336a72a2043bf74a10.pdf)</font><br>
+<font size="1">Wallace, R. M., Undurraga, E. A., Gibson, A., Boone, J., Pieracci, E. G., Gamble, L., & Blanton, J. D. (2019). Estimating the effectiveness of vaccine programs in dog populations. Epidemiology & Infection, 147. [https://doi.org/10.1017/S0950268819001158](https://doi.org/10.1017/S0950268819001158)</font><br>
 <font size="1">WHO Rabies Factsheet. (n.d.). Retrieved July 29, 2021, from [https://www.who.int/news-room/fact-sheets/detail/rabies](https://www.who.int/news-room/fact-sheets/detail/rabies)</font><br>
 <font size="1">WHO Rabies—India. (n.d.). Retrieved July 30, 2021, from [https://www.who.int/india/health-topics/rabies](https://www.who.int/india/health-topics/rabies)</font><br>
 <font size="1">WHO (2019) First annual progress report Global Strategic Plan to End Human Deaths from Dog-mediated Rabies by 2030. Retrieved November 20, 2021, from [https://www.who.int/publications-detail-redirect/WHO-CDS-NTD-NZD-2019.04](https://www.who.int/publications-detail-redirect/WHO-CDS-NTD-NZD-2019.04)</font><br>
